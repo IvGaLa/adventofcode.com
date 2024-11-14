@@ -2,12 +2,18 @@
   "name": "adventofcode.com",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "2023:01": "nodemon 2023/day01.js"
   },
   "keywords": [],
   "author": "IvGaLa",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IvGaLa/adventofcode.com.git"
+  },
   "license": "ISC",
   "description": "",
   "devDependencies": {
