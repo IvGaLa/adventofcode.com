@@ -4,9 +4,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "2023:01": "nodemon 2023/day01.js"
+    "2023:01": "nodemon 2023/day01.js",
+    "2023:01b": "nodemon 2023/day01b.js"
   },
   "keywords": [],
   "author": "IvGaLa",
