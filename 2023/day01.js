@@ -1029,7 +1029,6 @@ const dataArray = [
 
 const reg = /[0-9]/ // regexp for check if char is a number
 let total = 0 // total count
-const fileInput = './2023/day01.txt' // data
 
 // return the first number of the string
 const getFirst = (str) => {
