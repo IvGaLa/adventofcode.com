@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "2023:01": "nodemon 2023/day01.js"
+    "2023:01": "nodemon 2023/day01/index.js"
   },
   "keywords": [],
   "author": "IvGaLa",
