@@ -46,8 +46,7 @@ What is the sum of all of the calibration values ?
 
  */
 
-import { dataDay01 } from "./input/day01.js"
-import { dataDay01b } from "./input/day01b.js"
+import { dataDay01, dataDay01b } from "./input.js"
 
 // Replace words like one, two... for 1, 2...
 const getReplaced = (_str, _find, _replace) => {
