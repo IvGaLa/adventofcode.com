@@ -6,7 +6,8 @@
   "scripts": {
     "2023:01": "nodemon 2023/day01/index.js",
     "2023:02": "nodemon 2023/day02/index.js",
-    "2023:03": "nodemon 2023/day03/index.js"
+    "2023:03": "nodemon 2023/day03/index.js",
+    "2023:04": "nodemon 2023/day04/index.js"
   },
   "keywords": [],
   "author": "IvGaLa",
