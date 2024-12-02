@@ -65,7 +65,7 @@ Process all of the original and copied scratchcards until no more scratchcards a
 
 */
 
-import { _readInput } from "../lib.js";
+import { _readInput } from '../../lib.js'
 
 
 

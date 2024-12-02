@@ -54,7 +54,7 @@ Update your analysis by handling situations where the Problem Dampener can remov
 
 */
 
-import { _readInput } from '../../2023/lib.js'
+import { _readInput } from '../../lib.js'
 
 
 const getReports = (_data) => {

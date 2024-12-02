@@ -60,7 +60,7 @@ What is the sum of all of the gear ratios in your engine schematic?
 
 */
 
-import { _readInput } from "../lib.js";
+import { _readInput } from '../../lib.js'
 
 
 const findNumberPositions = (str, lineNumber) => {
