@@ -33,6 +33,25 @@ So, in this example, 2 reports are safe.
 Analyze the unusual data from the engineers. How many reports are safe?
 
 
+--- Part Two ---
+The engineers are surprised by the low number of safe reports until they realize they forgot to tell you about the Problem Dampener.
+
+The Problem Dampener is a reactor-mounted module that lets the reactor safety systems tolerate a single bad level in what would otherwise be a safe report. It's like the bad level never happened!
+
+Now, the same rules apply as before, except if removing a single level from an unsafe report would make it safe, the report instead counts as safe.
+
+More of the above example's reports are now safe:
+
+7 6 4 2 1: Safe without removing any level.
+1 2 7 8 9: Unsafe regardless of which level is removed.
+9 7 6 2 1: Unsafe regardless of which level is removed.
+1 3 2 4 5: Safe by removing the second level, 3.
+8 6 4 4 1: Safe by removing the third level, 4.
+1 3 6 7 9: Safe without removing any level.
+Thanks to the Problem Dampener, 4 reports are actually safe!
+
+Update your analysis by handling situations where the Problem Dampener can remove a single level from unsafe reports. How many reports are now safe?
+
 */
 
 import { _readInput } from '../../2023/lib.js'
@@ -52,9 +71,9 @@ const isDecreasing = (a, b) => (a < b) && calcDifference(a, b)
 
 const isSafeReport = (report) => {
   const increases = report.every((_, i, rep) => i === 0 || isIncreasing(rep[i], rep[i - 1]))
-  const decrease = report.every((_, i, rep) => i === 0 || isDecreasing(rep[i], rep[i - 1]))
+  const decreases = report.every((_, i, rep) => i === 0 || isDecreasing(rep[i], rep[i - 1]))
 
-  return (increases || decrease)
+  return (increases || decreases)
 }
 
 const day02 = (fileInput) => {
@@ -70,8 +89,42 @@ const day02 = (fileInput) => {
 }
 
 
+// ----------------------------------------------------------------------------------
+
+
+const safeWithRemove = (report) => {
+  for (let i = 0; i < report.length; i++) {
+    const rep = report.slice(0, i).concat(report.slice(i + 1));
+    if (isSafeReport(rep)) return true
+  }
+  return false
+}
+
+
+const day02Two = (fileInput) => {
+  const _data = _readInput(fileInput)
+  const reports = getReports(_data)
+
+  let count = 0
+  const falsePositive = []
+  for (const report of reports) {
+    if (isSafeReport(report)) {
+      count++
+    } else {
+      falsePositive.push(report)
+    }
+  }
+
+  for (const report of falsePositive) {
+    safeWithRemove(report) && count++
+  }
+
+  return count // 566
+}
+
 
 //const fileInput = './2024/day02/example.txt'
 const fileInput = './2024/day02/input.txt'
 
 console.log(day02(fileInput));
+console.log(day02Two(fileInput));
