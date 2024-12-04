@@ -72,140 +72,77 @@ Flip the word search from the instructions back over to the word search side and
 
 import { _readInput } from '../../lib.js'
 
-const checkHorizontal = (line) => {
-  const xmas = /XMAS/g
-  const samx = /SAMX/g
-  return [...line.matchAll(xmas)].length + [...line.matchAll(samx)].length
-}
+const checkWord = (_data, row, col, direction) => {
+  const xmas = 'XMAS'
+  const [dx, dy] = direction
+  let word = ''
 
-const checkVerticalWordDown = (_data, index, i) => {
-  let _search = ''
-  try {
-    _search = _data[index][i] + _data[index + 1][i] + _data[index + 2][i] + _data[index + 3][i]
-  } catch (error) {
-    _search = null
-  }
-  return (_search === xmas) ? 1 : 0
-}
+  for (let i = 0; i < xmas.length; i++) {
+    const newRow = row + dx * i
+    const newCol = col + dy * i
+    if (newRow < 0 || newRow >= _data.length || newCol < 0 || newCol >= _data[0].length) return 0
 
-const checkVerticalWordUp = (_data, index, i) => {
-  let _search = ''
-  try {
-    _search = _data[index][i] + _data[index - 1][i] + _data[index - 2][i] + _data[index - 3][i]
-  } catch (error) {
-    _search = null
-  }
-  return (_search === xmas) ? 1 : 0
-}
-
-const checkVertical = (_data, index) => {
-  let count = 0
-  const line = _data[index]
-  for (let i = 0; i < line.length; i++) {
-    if (line[i] === 'X') {
-      count += checkVerticalWordUp(_data, index, i)
-      count += checkVerticalWordDown(_data, index, i)
-    }
+    word += _data[newRow][newCol]
   }
 
-  return count
+  return word === xmas ? 1 : 0
 }
 
-const checkDiagonalWordUpRight = (_data, index, i) => {
-  let _search = ''
-  try {
-    _search = _data[index][i] + _data[index - 1][i + 1] + _data[index - 2][i + 2] + _data[index - 3][i + 3]
-  } catch (error) {
-    _search = null
-  }
+const checkDirections = (_data, row, col) => {
+  const directions = [
+    [0, 1],   // Right
+    [1, 0],   // Down
+    [1, 1],   // Up-Right
+    [1, -1],  // Down-Left
+    [-1, 0],  // Up
+    [-1, 1],  // Up-Right
+    [-1, -1], // Up-Left
+    [0, -1],  // Left
+  ]
 
-  return (_search === xmas) ? 1 : 0
+  return directions.reduce((count, dir) => count + checkWord(_data, row, col, dir), 0)
 }
-
-const checkDiagonalWordUpLeft = (_data, index, i) => {
-  let _search = ''
-  try {
-    _search = _data[index][i] + _data[index - 1][i - 1] + _data[index - 2][i - 2] + _data[index - 3][i - 3]
-  } catch (error) {
-    _search = null
-  }
-  return (_search === xmas) ? 1 : 0
-}
-
-const checkDiagonalWordDownRight = (_data, index, i) => {
-  let _search = ''
-  try {
-    _search = _data[index][i] + _data[index + 1][i + 1] + _data[index + 2][i + 2] + _data[index + 3][i + 3]
-  } catch (error) {
-    _search = null
-  }
-  return (_search === xmas) ? 1 : 0
-}
-
-const checkDiagonalWordDownLeft = (_data, index, i) => {
-  let _search = ''
-  try {
-    _search = _data[index][i] + _data[index + 1][i - 1] + _data[index + 2][i - 2] + _data[index + 3][i - 3]
-  } catch (error) {
-    _search = null
-  }
-  return (_search === xmas) ? 1 : 0
-}
-
-const checkDiagonal = (_data, index) => {
-  let count = 0
-  const line = _data[index]
-  for (let i = 0; i < line.length; i++) {
-    if (line[i] === 'X') {
-      count += checkDiagonalWordUpRight(_data, index, i) // Up-Right
-      count += checkDiagonalWordUpLeft(_data, index, i) // Up-Left
-      count += checkDiagonalWordDownRight(_data, index, i) // Down-Right
-      count += checkDiagonalWordDownLeft(_data, index, i) // Down-Left
-    }
-  }
-
-  return count
-}
-
 
 const day04 = (fileInput) => {
   const _data = _readInput(fileInput)
-
   let count = 0
 
-  for (let i = 0; i < _data.length; i++) {
-    count += checkHorizontal(_data[i])
-    count += checkVertical(_data, i)
-    count += checkDiagonal(_data, i)
+  for (let row = 0; row < _data.length; row++) {
+    for (let col = 0; col < _data[row].length; col++) {
+      if (_data[row][col] === 'X') {
+        count += checkDirections(_data, row, col)
+      }
+    }
   }
 
   return count
 }
-
 
 // --------------------------------------------------------
 
 
-
 const checkX = (_data, lineIndex, chrIndex) => {
-  let _search = false
-  try {
-    let diagonal1 = _data[lineIndex][chrIndex] + _data[lineIndex + 1][chrIndex + 1] + _data[lineIndex + 2][chrIndex + 2]
-    let diagonal2 = _data[lineIndex][chrIndex + 2] + _data[lineIndex + 1][chrIndex + 1] + _data[lineIndex + 2][chrIndex]
+  const mas = 'MAS'
+  const sam = 'SAM'
+  const len = mas.length
 
-    if (
-      (diagonal1 === mas && diagonal2 === sam) ||
-      (diagonal1 === mas && diagonal2 === mas) ||
-      (diagonal1 === sam && diagonal2 === mas) ||
-      (diagonal1 === sam && diagonal2 === sam)
-    ) return 1
+  let diagonal1 = ''
+  let diagonal2 = ''
 
-  } catch (error) {
-    return 0
+  for (let i = 0; i < len; i++) {
+    diagonal1 += _data[lineIndex + i]?.[chrIndex + i] || ''
+    diagonal2 += _data[lineIndex + i]?.[chrIndex + (len - 1) - i] || ''
   }
-  return (_search) ? 1 : 0
-}
 
+  const validCombinations = [
+    [mas, sam],
+    [mas, mas],
+    [sam, mas],
+    [sam, sam],
+  ]
+  return validCombinations.some(([d1, d2]) => diagonal1 === d1 && diagonal2 === d2) ? 1 : 0
+
+}
 
 const day04Two = (fileInput) => {
   const _data = _readInput(fileInput)
@@ -217,11 +154,6 @@ const day04Two = (fileInput) => {
   }
   return count
 }
-
-
-const xmas = 'XMAS'
-const mas = 'MAS'
-const sam = 'SAM'
 
 //const fileInput = './2024/day04/example.txt'
 const fileInput = './2024/day04/input.txt'
