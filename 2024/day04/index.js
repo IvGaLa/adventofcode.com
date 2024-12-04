@@ -39,6 +39,35 @@ S.S.S.S.SS
 Take a look at the little Elf's word search. How many times does XMAS appear?
 
 To begin, get your puzzle input
+
+
+--- Part Two ---
+The Elf looks quizzically at you. Did you misunderstand the assignment?
+
+Looking for the instructions, you flip over the word search to find that this isn't actually an XMAS puzzle; it's an X-MAS puzzle in which you're supposed to find two MAS in the shape of an X. One way to achieve that is like this:
+
+M.S
+.A.
+M.S
+Irrelevant characters have again been replaced with . in the above diagram. Within the X, each MAS can be written forwards or backwards.
+
+Here's the same example from before, but this time all of the X-MASes have been kept instead:
+
+.M.S......
+..A..MSMS.
+.M.S.MAA..
+..A.ASMSM.
+.M.S.M....
+..........
+S.S.S.S.S.
+.A.A.A.A..
+M.M.M.M.M.
+..........
+In this example, an X-MAS appears 9 times.
+
+Flip the word search from the instructions back over to the word search side and try again. How many times does an X-MAS appear?
+
+
 */
 
 import { _readInput } from '../../lib.js'
@@ -127,7 +156,7 @@ const checkDiagonal = (_data, index) => {
   let count = 0
   const line = _data[index]
   for (let i = 0; i < line.length; i++) {
-    if (line[i] === 'X'){
+    if (line[i] === 'X') {
       count += checkDiagonalWordUpRight(_data, index, i) // Up-Right
       count += checkDiagonalWordUpLeft(_data, index, i) // Up-Left
       count += checkDiagonalWordDownRight(_data, index, i) // Down-Right
@@ -145,8 +174,7 @@ const day04 = (fileInput) => {
   let count = 0
 
   for (let i = 0; i < _data.length; i++) {
-    const line = _data[i]
-    count += checkHorizontal(line)
+    count += checkHorizontal(_data[i])
     count += checkVertical(_data, i)
     count += checkDiagonal(_data, i)
   }
@@ -158,16 +186,45 @@ const day04 = (fileInput) => {
 // --------------------------------------------------------
 
 
-// const day04Two = (fileInput) => {
-//   const _data = _readInput(fileInput)
 
-//   return _data
-// }
+const checkX = (_data, lineIndex, chrIndex) => {
+  let _search = false
+  try {
+    let diagonal1 = _data[lineIndex][chrIndex] + _data[lineIndex + 1][chrIndex + 1] + _data[lineIndex + 2][chrIndex + 2]
+    let diagonal2 = _data[lineIndex][chrIndex + 2] + _data[lineIndex + 1][chrIndex + 1] + _data[lineIndex + 2][chrIndex]
+
+    if (
+      (diagonal1 === mas && diagonal2 === sam) ||
+      (diagonal1 === mas && diagonal2 === mas) ||
+      (diagonal1 === sam && diagonal2 === mas) ||
+      (diagonal1 === sam && diagonal2 === sam)
+    ) return 1
+
+  } catch (error) {
+    return 0
+  }
+  return (_search) ? 1 : 0
+}
+
+
+const day04Two = (fileInput) => {
+  const _data = _readInput(fileInput)
+  let count = 0
+  for (let i = 0; i < _data.length; i++) {
+    for (let y = 0; y < _data[i].length; y++) {
+      if (_data[i][y] === 'M' || _data[i][y] === 'S') count += checkX(_data, i, y)
+    }
+  }
+  return count
+}
 
 
 const xmas = 'XMAS'
+const mas = 'MAS'
+const sam = 'SAM'
+
 //const fileInput = './2024/day04/example.txt'
 const fileInput = './2024/day04/input.txt'
 
 console.log(day04(fileInput)); // 2573
-//console.log(day04Two(fileInput));
+console.log(day04Two(fileInput)); // 1850
