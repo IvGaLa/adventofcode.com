@@ -92,45 +92,6 @@ const day05 = (fileInput) => {
 
 // --------------------------------------------------------
 
-
-const sortInvalid = (r, u) => {
-  let total = 0
-
-  const updates = []
-  const rules = []
-  u.forEach((v) => { updates.push(v) })
-  r.sort().forEach((v) => { rules.push(v) })
-
-  updates.forEach((update) => {
-    let isCorrect = true
-    for (let i = 0; i < rules.length; i++) {
-      const [xIndex, yIndex] = rules[i]
-      const first = update.indexOf(xIndex)
-      const second = update.indexOf(yIndex)
-
-      if ((first !== -1 && second !== -1) && (second < first)) {
-        const v1 = update[first]
-        const v2 = update[second]
-        update[first] = v2
-        update[second] = v1
-
-        isCorrect = false
-        i = 0
-      }
-    }
-
-    if (!isCorrect) {
-      const middle = Math.floor(update.length / 2)
-      total += parseInt(update[middle])
-    }
-  })
-
-  return total
-}
-
-
-
-
 const day05Two = (fileInput) => {
   const _data = _readInput(fileInput)
   const { rules: r, updates: u } = getRulesUpdates(_data)
