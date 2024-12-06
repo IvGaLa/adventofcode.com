@@ -110,6 +110,8 @@ const findLowestLocation = (seeds, maps) => {
     for (const map of maps) {
       seed = applyMap(seed, map);
     }
+    console.log(seed);
+
     return seed
   })
 
@@ -142,7 +144,55 @@ const day05 = (inputFile) => {
   return findLowestLocation(seeds, maps)
 }
 
+
+// -------------------------------
+
+
+const findLowestLocationRange = (seeds, maps) => {
+  let location = []
+  for (let i = 0; i < seeds.length; i += 2) {
+    const start = seeds[i]
+
+    const length = seeds[i + 1]
+    for (let j = 0; j < length; j++) {
+      let seed = start + j
+
+      for (const map of maps) {
+        seed = applyMap(seed, map)
+      }
+
+      if (location.length > 125000) {
+        let min = Math.min(...location)
+        let __length = location.length
+        location = []
+        location.push(min)
+        console.log({ seed, min, __length })
+      }
+      location.push(seed)
+
+    }
+  }
+
+  return Math.min(...location)
+}
+
+
+const day05Two = (inputFile) => {
+  const _data = _readInput(inputFile);
+  const seeds = _data[0].split(': ')[1].split(' ').map(Number)
+
+  const maps = getMaps(_data);
+
+  return findLowestLocationRange(seeds, maps);
+};
+
+
 //const inputFile = './2023/day05/example.txt'
 const inputFile = './2023/day05/input.txt'
 
-console.log(day05(inputFile)); // 84470622
+//console.log(day05(inputFile)); // 84470622
+console.log(day05Two(inputFile));
+
+
+
+
