@@ -4,6 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "template": "node template.js",
     "2015": "-------------------------------",
     "2015:01": "nodemon 2015/day01/index.js",
     "2023": "-------------------------------",
