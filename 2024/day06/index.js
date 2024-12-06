@@ -196,23 +196,8 @@ const getInitialPosition = (_data) => {
 }
 
 const changeDirection = () => {
-  switch (direction) {
-    case 'u':
-      direction = 'r'
-      break
-
-    case 'r':
-      direction = 'd'
-      break
-
-    case 'd':
-      direction = 'l'
-      break
-
-    case 'l':
-      direction = 'u'
-      break
-  }
+  direction++
+  if (direction === 4) direction = 0
 }
 
 
@@ -240,21 +225,20 @@ const day06 = (fileInput) => {
 // --------------------------------------------------------
 
 
-// const day06Two = (fileInput) => {
-//   const _data = _readInput(fileInput)
+const day06Two = (fileInput) => {
+  const _data = _readInput(fileInput)
 
-//   return _data
-// }
-
-const desk = '#'
-let direction = 'u'
-const directions = {
-  u: [-1, 0], // up
-  r: [0, 1], // right
-  d: [1, 0], // down
-  l: [0, -1] // left
+  return _data
 }
 
+const desk = '#'
+let direction = 0
+const directions = [
+  [-1, 0], // up
+  [0, 1], // right
+  [1, 0], // down
+  [0, -1] // left
+]
 
 //const fileInput = './2024/day06/example.txt' // 41
 const fileInput = './2024/day06/input.txt'
