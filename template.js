@@ -1,4 +1,5 @@
-import { existsSync, mkdirSync, writeFile } from 'fs';
+import { existsSync, mkdirSync, writeFile, readFileSync, writeFileSync } from 'fs';
+//import { readFile } from 'fs/promises';
 import { resolve } from 'path';
 
 
@@ -13,6 +14,7 @@ const showError = (errorNumber) => {
   errors[1] = 'YEAR must be greater than 2015.'
   errors[2] = 'DAY must be between 1 and 31.'
   errors[3] = 'Error writing files.'
+  errors[4] = 'Cannot read/write packages.json file.'
   console.log(errors[errorNumber])
   process.exit(0);
 }
@@ -22,6 +24,25 @@ if (_year < 2015) showError(1)
 if (_day < 1 || _day > 31) showError(2)
 
 day = day.padStart(2, '0')
+
+const writePackagesJson = (scriptToInsert) => {
+  const { scriptName, scriptCommand } = scriptToInsert
+  const packageJsonPath = './package.json'
+
+  try {
+    const packageData = readFileSync(packageJsonPath, 'utf-8')
+    const packageJson = JSON.parse(packageData)
+
+    packageJson.scripts = packageJson.scripts || {}
+    packageJson.scripts[scriptName] = scriptCommand
+
+    const updatedPackageData = JSON.stringify(packageJson, null, 2)
+    writeFileSync(packageJsonPath, updatedPackageData, 'utf-8')
+
+  } catch (error) {
+    showError(4)
+  }
+}
 
 const createYearDirectory = (dirPath) => {
   const fullPath = resolve(process.cwd(), dirPath)
@@ -72,9 +93,15 @@ const inputFilename = 'input.txt'
 const scriptFilename = 'index.js'
 const scriptDir = `${year}/day${day}`
 
+const newScriptPackagesJson = {
+  scriptName: `${year}:${day}`,
+  scriptCommand: `nodemon ${year}/day${day}/index.js`
+}
+
 createYearDirectory(scriptDir) // Create destination directory
 createFile(`${scriptDir}/${exampleFilename}`) // Create example file
 createFile(`${scriptDir}/${inputFilename}`) // Create input file
 createFile(`${scriptDir}/${scriptFilename}`, templateString) // Create script file
+writePackagesJson(newScriptPackagesJson) // Write new packages script section
 
-console.log(`Created script in ${scriptDir}`);
+console.log(`Created script.\nYou can run 'npm run ${year}:${day}'`);
