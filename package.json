@@ -18,7 +18,8 @@
     "2024:05": "nodemon 2024/day05/index.js",
     "2024:06": "nodemon 2024/day06/index.js",
     "2024:07": "nodemon 2024/day07/index.js",
-    "2024:08": "nodemon 2024/day08/index.js"
+    "2024:08": "nodemon 2024/day08/index.js",
+    "2024:09": "nodemon 2024/day09/index.js"
   },
   "keywords": [],
   "author": "IvGaLa",
