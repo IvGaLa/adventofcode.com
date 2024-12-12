@@ -38,72 +38,68 @@ Handle the new instructions; what do you get if you add up all of the results of
 
 */
 
-import { _readInput } from '../../lib.js'
+import { _readInput } from '../../lib.js';
 
 const getMules = (_data) => {
   const regex = /mul\(\d{1,3},\d{1,3}\)/g;
   const matches = _data.match(regex);
-  return matches
-}
+  return matches;
+};
 
 const getMulNumbers = (mul) => {
   const regex = /\d{1,3}/g;
-  const matches = mul.match(regex)
-  return matches
-}
-
+  const matches = mul.match(regex);
+  return matches;
+};
 
 const day03 = (fileInput) => {
-  const _data = _readInput(fileInput)
-  let count = 0
+  const _data = _readInput(fileInput);
+  let count = 0;
   for (const line of _data) {
-    const mules = getMules(line)
+    const mules = getMules(line);
     for (const mul of mules) {
-      const numbers = getMulNumbers(mul).map(Number)
-      count += numbers[0] * numbers[1]
+      const numbers = getMulNumbers(mul).map(Number);
+      count += numbers[0] * numbers[1];
     }
   }
-  return count // 181345830
-}
-
+  return count; // 181345830
+};
 
 // -------------------------------------------------------------
-
 
 const getDoDontMules = (_data) => {
   const mules = _data.match(/mul\(\d{1,3},\d{1,3}\)|do\(\)|don't\(\)/g);
   let isEnabled = true;
-  let count = 0
+  let count = 0;
 
   for (const mul of mules) {
     if (mul === 'do()') {
-      isEnabled = true
+      isEnabled = true;
     } else if (mul === "don't()") {
-      isEnabled = false
+      isEnabled = false;
     } else if (isEnabled) {
-      const numbers = getMulNumbers(mul).map(Number)
-      count += numbers[0] * numbers[1]
+      const numbers = getMulNumbers(mul).map(Number);
+      count += numbers[0] * numbers[1];
     }
   }
 
   return count;
-}
+};
 
 const day03Two = (fileInput) => {
-  const _data = _readInput(fileInput)
+  const _data = _readInput(fileInput);
 
-  let input = ''
+  let input = '';
   for (const line of _data) {
-    input += line
+    input += line;
   }
 
-  return getDoDontMules(input)
-}
-
+  return getDoDontMules(input);
+};
 
 //const fileInput = './2024/day03/example.txt'
 //const fileInput = './2024/day03/example2.txt'
-const fileInput = './2024/day03/input.txt'
+const fileInput = './2024/day03/input.txt';
 
 console.log(day03(fileInput)); // 181345830
 console.log(day03Two(fileInput)); // 98729041

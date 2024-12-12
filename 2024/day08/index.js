@@ -4,20 +4,23 @@ const day08 = (fileInput) => calculateAntinodes(fileInput);
 
 const day08Two = (fileInput) => calculateAntinodes(fileInput, 2);
 
-const parseInput = (fileInput) => _readInput(fileInput).map(row => row.split(''));
+const parseInput = (fileInput) =>
+  _readInput(fileInput).map((row) => row.split(''));
 
-const extractAntennas = (grid) => new Set(grid.flatMap(row => row.filter(cell => cell !== '.')));
+const extractAntennas = (grid) =>
+  new Set(grid.flatMap((row) => row.filter((cell) => cell !== '.')));
 
 const calculateAntinodes = (fileInput, part = 1) => {
   const grid = parseInput(fileInput);
   const antennas = extractAntennas(grid);
   const antinodes = [];
 
-  antennas.forEach(antenna => {
+  antennas.forEach((antenna) => {
     const paths = getAllPaths(getCoordinates(grid, antenna[0]));
-    const points = part === 1
-      ? calculateBoundaryPoints(grid.length, paths)
-      : calculateAllLinePoints(grid.length, paths);
+    const points =
+      part === 1
+        ? calculateBoundaryPoints(grid.length, paths)
+        : calculateAllLinePoints(grid.length, paths);
     antinodes.push(...points);
   });
 
@@ -30,11 +33,11 @@ const calculateBoundaryPoints = (size, paths) => {
     const dy = y2 - y1;
     const boundaries = [
       [x1 - dx, y1 - dy],
-      [x2 + dx, y2 + dy]
+      [x2 + dx, y2 + dy],
     ];
 
     boundaries.forEach(([x, y]) => {
-      if (isWithinBounds(x, y, size)) points.push(JSON.stringify([x, y]))
+      if (isWithinBounds(x, y, size)) points.push(JSON.stringify([x, y]));
     });
 
     return points;
@@ -48,7 +51,8 @@ const calculateAllLinePoints = (size, paths) => {
 
     for (let x = 0; x < size; x++) {
       for (let y = 0; y < size; y++) {
-        if ((y - y1) * dx === (x - x1) * dy) points.push(JSON.stringify([x, y]))
+        if ((y - y1) * dx === (x - x1) * dy)
+          points.push(JSON.stringify([x, y]));
       }
     }
 
@@ -60,7 +64,7 @@ const getCoordinates = (grid, target) => {
   const coordinates = [];
   grid.forEach((row, x) => {
     row.forEach((cell, y) => {
-      if (cell === target) coordinates.push([x, y])
+      if (cell === target) coordinates.push([x, y]);
     });
   });
   return coordinates;
@@ -78,9 +82,8 @@ const getAllPaths = (points) => {
 
 const isWithinBounds = (x, y, size) => x >= 0 && x < size && y >= 0 && y < size;
 
-
 //const fileInput = './2024/day08/example.txt'
-const fileInput = './2024/day08/input.txt'
+const fileInput = './2024/day08/input.txt';
 
-console.log(day08(fileInput)) // 222
-console.log(day08Two(fileInput)) // 884
+console.log(day08(fileInput)); // 222
+console.log(day08Two(fileInput)); // 884

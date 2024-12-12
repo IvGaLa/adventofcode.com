@@ -68,50 +68,48 @@ So, for these example lists, the similarity score at the end of this process is 
 Once again consider your left and right lists. What is their similarity score?
 */
 
-import { _readInput } from '../../lib.js'
+import { _readInput } from '../../lib.js';
 
 const getNumbers = (_data) => {
-  const left = []
-  const right = []
-  _data.map(line => {
-    const numbers = line.split(' ')
-    left.push(Number(numbers.at(0)))
-    right.push(Number(numbers.at(-1)))
-  })
-  return { left, right }
-}
+  const left = [];
+  const right = [];
+  _data.map((line) => {
+    const numbers = line.split(' ');
+    left.push(Number(numbers.at(0)));
+    right.push(Number(numbers.at(-1)));
+  });
+  return { left, right };
+};
 
 const day01 = (fileInput) => {
-  const _data = _readInput(fileInput)
-  const { left, right } = getNumbers(_data)
+  const _data = _readInput(fileInput);
+  const { left, right } = getNumbers(_data);
 
-  left.sort()
-  right.sort()
+  left.sort();
+  right.sort();
 
-  let count = 0
+  let count = 0;
   for (let i = 0; i < left.length; i++) {
-    count += Math.abs(left[i] - right[i])
+    count += Math.abs(left[i] - right[i]);
   }
 
-  return count // 1879048
-}
-
+  return count; // 1879048
+};
 
 const day01Two = (fileInput) => {
-  const _data = _readInput(fileInput)
-  const { left, right } = getNumbers(_data)
+  const _data = _readInput(fileInput);
+  const { left, right } = getNumbers(_data);
 
-  let count = 0
+  let count = 0;
   for (let i = 0; i < left.length; i++) {
-    count += left[i] * right.filter(n => n == left[i]).length
+    count += left[i] * right.filter((n) => n == left[i]).length;
   }
 
-  return count // 21024792
-}
+  return count; // 21024792
+};
 
-const fileInput = './2024/day01/input.txt'
+const fileInput = './2024/day01/input.txt';
 //const fileInput = './2024/day01/example.txt'
 
 console.log(day01(fileInput));
 console.log(day01Two(fileInput));
-

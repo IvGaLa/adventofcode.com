@@ -62,49 +62,53 @@ How many stones would you have after blinking a total of 75 times?
 
 */
 
-import { _readInput } from '../../lib.js'
-
+import { _readInput } from '../../lib.js';
 
 const count = (stone, steps) => {
   const cacheKey = `${stone}-${steps}`;
-  
+
   if (cache.has(cacheKey)) return cache.get(cacheKey);
-  
+
   if (steps === 0) return 1;
-  
+
   if (stone === 0) {
     const result = count(1, steps - 1);
     cache.set(cacheKey, result);
     return result;
   }
-  
+
   const str = stone.toString();
   const length = str.length;
   let result;
-  
+
   if (length % 2 === 0) {
     const left = parseInt(str.slice(0, length / 2));
     const right = parseInt(str.slice(length / 2));
     result = count(left, steps - 1) + count(right, steps - 1);
   } else result = count(stone * 2024, steps - 1);
-  
+
   cache.set(cacheKey, result);
 
   return result;
-}
+};
 
-const parseInput = (fileInput) => _readInput(fileInput)[0].split(' ').map(Number)
+const parseInput = (fileInput) =>
+  _readInput(fileInput)[0].split(' ').map(Number);
 
-const day11 = (fileInput, pass) => parseInput(fileInput).map(stone => count(stone, pass)).reduce((previous, value) => previous + value, 0)
+const day11 = (fileInput, pass) =>
+  parseInput(fileInput)
+    .map((stone) => count(stone, pass))
+    .reduce((previous, value) => previous + value, 0);
 
-const day11Two = (fileInput, pass) => parseInput(fileInput).map(stone => count(stone, pass)).reduce((previous, value) => previous + value, 0)
-
-
+const day11Two = (fileInput, pass) =>
+  parseInput(fileInput)
+    .map((stone) => count(stone, pass))
+    .reduce((previous, value) => previous + value, 0);
 
 //const fileInput = './2024/day11/example.txt' // 55312 - 65601038650482
-const fileInput = './2024/day11/input.txt' // 216042 - 255758646442399
+const fileInput = './2024/day11/input.txt'; // 216042 - 255758646442399
 
-let cache = new Map()
-console.log(day11(fileInput, 25))
-cache = new Map()
-console.log(day11Two(fileInput, 75))
+let cache = new Map();
+console.log(day11(fileInput, 25));
+cache = new Map();
+console.log(day11Two(fileInput, 75));

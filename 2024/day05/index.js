@@ -50,89 +50,89 @@ Find the updates which are not in the correct order. What do you get if you add 
 
 */
 
-import { _readInput } from '../../lib.js'
-
+import { _readInput } from '../../lib.js';
 
 const getRulesUpdates = (_data) => {
-  const rules = []
-  const updates = []
+  const rules = [];
+  const updates = [];
   for (const line of _data) {
-    const chr = line[2]
-    if (chr === '|') rules.push(line.split('|').map(Number))
-    if (chr === ',') updates.push(line.split(',').map(Number))
+    const chr = line[2];
+    if (chr === '|') rules.push(line.split('|').map(Number));
+    if (chr === ',') updates.push(line.split(',').map(Number));
   }
-  return { rules, updates }
-}
+  return { rules, updates };
+};
 
 const isValidUpdate = (update, rules) => {
   for (const [x, y] of rules) {
-    const xIndex = update.indexOf(x)
-    const yIndex = update.indexOf(y)
-    if (xIndex !== -1 && yIndex !== -1 && xIndex > yIndex) return false
+    const xIndex = update.indexOf(x);
+    const yIndex = update.indexOf(y);
+    if (xIndex !== -1 && yIndex !== -1 && xIndex > yIndex) return false;
   }
-  return true
-}
+  return true;
+};
 
 const day05 = (fileInput) => {
-  const _data = _readInput(fileInput)
-  const { rules, updates } = getRulesUpdates(_data)
+  const _data = _readInput(fileInput);
+  const { rules, updates } = getRulesUpdates(_data);
 
-  let count = 0
+  let count = 0;
 
   for (const update of updates) {
     if (isValidUpdate(update, rules)) {
-      const middlePage = Math.floor(update.length / 2)
-      count += update[middlePage]
+      const middlePage = Math.floor(update.length / 2);
+      count += update[middlePage];
     }
   }
 
-  return count
-}
-
+  return count;
+};
 
 // --------------------------------------------------------
 
 const day05Two = (fileInput) => {
-  const _data = _readInput(fileInput)
-  const { rules: r, updates: u } = getRulesUpdates(_data)
-  let count = 0
+  const _data = _readInput(fileInput);
+  const { rules: r, updates: u } = getRulesUpdates(_data);
+  let count = 0;
 
-  const updates = []
-  const rules = []
-  u.forEach((v) => { updates.push(v) })
-  r.sort().forEach((v) => { rules.push(v) })
+  const updates = [];
+  const rules = [];
+  u.forEach((v) => {
+    updates.push(v);
+  });
+  r.sort().forEach((v) => {
+    rules.push(v);
+  });
 
   updates.forEach((update) => {
-    let isCorrect = true
+    let isCorrect = true;
     for (let i = 0; i < rules.length; i++) {
-      const [xIndex, yIndex] = rules[i]
-      const first = update.indexOf(xIndex)
-      const second = update.indexOf(yIndex)
+      const [xIndex, yIndex] = rules[i];
+      const first = update.indexOf(xIndex);
+      const second = update.indexOf(yIndex);
 
-      if ((first !== -1 && second !== -1) && (second < first)) {
-        const v1 = update[first]
-        const v2 = update[second]
-        update[first] = v2
-        update[second] = v1
+      if (first !== -1 && second !== -1 && second < first) {
+        const v1 = update[first];
+        const v2 = update[second];
+        update[first] = v2;
+        update[second] = v1;
 
-        isCorrect = false
-        i = 0
+        isCorrect = false;
+        i = 0;
       }
     }
 
     if (!isCorrect) {
-      const middle = Math.floor(update.length / 2)
-      count += parseInt(update[middle])
+      const middle = Math.floor(update.length / 2);
+      count += parseInt(update[middle]);
     }
-  })
+  });
 
-  return count
-}
-
-
+  return count;
+};
 
 //const fileInput = './2024/day05/example.txt'
-const fileInput = './2024/day05/input.txt'
+const fileInput = './2024/day05/input.txt';
 
 console.log(day05(fileInput)); // 3608
 console.log(day05Two(fileInput)); // 4922

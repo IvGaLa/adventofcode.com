@@ -70,68 +70,76 @@ Flip the word search from the instructions back over to the word search side and
 
 */
 
-import { _readInput } from '../../lib.js'
+import { _readInput } from '../../lib.js';
 
 const checkWord = (_data, row, col, direction) => {
-  const xmas = 'XMAS'
-  const [dx, dy] = direction
-  let word = ''
+  const xmas = 'XMAS';
+  const [dx, dy] = direction;
+  let word = '';
 
   for (let i = 0; i < xmas.length; i++) {
-    const newRow = row + dx * i
-    const newCol = col + dy * i
-    if (newRow < 0 || newRow >= _data.length || newCol < 0 || newCol >= _data[0].length) return 0
+    const newRow = row + dx * i;
+    const newCol = col + dy * i;
+    if (
+      newRow < 0 ||
+      newRow >= _data.length ||
+      newCol < 0 ||
+      newCol >= _data[0].length
+    )
+      return 0;
 
-    word += _data[newRow][newCol]
+    word += _data[newRow][newCol];
   }
 
-  return word === xmas ? 1 : 0
-}
+  return word === xmas ? 1 : 0;
+};
 
 const checkDirections = (_data, row, col) => {
   const directions = [
-    [0, 1],   // Right
-    [1, 0],   // Down
-    [1, 1],   // Up-Right
-    [1, -1],  // Down-Left
-    [-1, 0],  // Up
-    [-1, 1],  // Up-Right
+    [0, 1], // Right
+    [1, 0], // Down
+    [1, 1], // Up-Right
+    [1, -1], // Down-Left
+    [-1, 0], // Up
+    [-1, 1], // Up-Right
     [-1, -1], // Up-Left
-    [0, -1],  // Left
-  ]
+    [0, -1], // Left
+  ];
 
-  return directions.reduce((count, dir) => count + checkWord(_data, row, col, dir), 0)
-}
+  return directions.reduce(
+    (count, dir) => count + checkWord(_data, row, col, dir),
+    0,
+  );
+};
 
 const day04 = (fileInput) => {
-  const _data = _readInput(fileInput)
-  let count = 0
+  const _data = _readInput(fileInput);
+  let count = 0;
 
   for (let row = 0; row < _data.length; row++) {
     for (let col = 0; col < _data[row].length; col++) {
       if (_data[row][col] === 'X') {
-        count += checkDirections(_data, row, col)
+        count += checkDirections(_data, row, col);
       }
     }
   }
 
-  return count
-}
+  return count;
+};
 
 // --------------------------------------------------------
 
-
 const checkX = (_data, lineIndex, chrIndex) => {
-  const mas = 'MAS'
-  const sam = 'SAM'
-  const len = mas.length
+  const mas = 'MAS';
+  const sam = 'SAM';
+  const len = mas.length;
 
-  let diagonal1 = ''
-  let diagonal2 = ''
+  let diagonal1 = '';
+  let diagonal2 = '';
 
   for (let i = 0; i < len; i++) {
-    diagonal1 += _data[lineIndex + i]?.[chrIndex + i] || ''
-    diagonal2 += _data[lineIndex + i]?.[chrIndex + (len - 1) - i] || ''
+    diagonal1 += _data[lineIndex + i]?.[chrIndex + i] || '';
+    diagonal2 += _data[lineIndex + i]?.[chrIndex + (len - 1) - i] || '';
   }
 
   const validCombinations = [
@@ -139,24 +147,28 @@ const checkX = (_data, lineIndex, chrIndex) => {
     [mas, mas],
     [sam, mas],
     [sam, sam],
-  ]
-  return validCombinations.some(([d1, d2]) => diagonal1 === d1 && diagonal2 === d2) ? 1 : 0
-
-}
+  ];
+  return validCombinations.some(
+    ([d1, d2]) => diagonal1 === d1 && diagonal2 === d2,
+  )
+    ? 1
+    : 0;
+};
 
 const day04Two = (fileInput) => {
-  const _data = _readInput(fileInput)
-  let count = 0
+  const _data = _readInput(fileInput);
+  let count = 0;
   for (let i = 0; i < _data.length; i++) {
     for (let y = 0; y < _data[i].length; y++) {
-      if (_data[i][y] === 'M' || _data[i][y] === 'S') count += checkX(_data, i, y)
+      if (_data[i][y] === 'M' || _data[i][y] === 'S')
+        count += checkX(_data, i, y);
     }
   }
-  return count
-}
+  return count;
+};
 
 //const fileInput = './2024/day04/example.txt'
-const fileInput = './2024/day04/input.txt'
+const fileInput = './2024/day04/input.txt';
 
 console.log(day04(fileInput)); // 2573
 console.log(day04Two(fileInput)); // 1850

@@ -117,116 +117,108 @@ You're not sure how, but the reindeer seems to have crafted some tiny flags out 
 
 */
 
-
-import { _readInput } from '../../lib.js'
-
+import { _readInput } from '../../lib.js';
 
 const directions = [
   [0, 1],
   [0, -1],
   [1, 0],
   [-1, 0],
-]
+];
 
-
-const getMap = (fileInput) => _readInput(fileInput).map(row => row.split('').map(Number))
-
+const getMap = (fileInput) =>
+  _readInput(fileInput).map((row) => row.split('').map(Number));
 
 const isValidPosition = (row, col, currentValue, visited) =>
-  row >= 0 && row < rows &&
-  col >= 0 && col < cols &&
+  row >= 0 &&
+  row < rows &&
+  col >= 0 &&
+  col < cols &&
   map[row][col] === currentValue + 1 &&
-  !visited.has(`${row},${col}`)
-
+  !visited.has(`${row},${col}`);
 
 const bfsPathsToNine = (row, col) => {
-  const queue = [[row, col]]
-  const visited = new Set([`${row},${col}`])
-  const reachableNines = new Set()
+  const queue = [[row, col]];
+  const visited = new Set([`${row},${col}`]);
+  const reachableNines = new Set();
 
   while (queue.length > 0) {
-    const [x, y] = queue.shift()
-    const currentValue = map[x][y]
+    const [x, y] = queue.shift();
+    const currentValue = map[x][y];
 
     for (const [dx, dy] of directions) {
-      const nx = x + dx
-      const ny = y + dy
+      const nx = x + dx;
+      const ny = y + dy;
 
       if (isValidPosition(nx, ny, currentValue, visited)) {
-        visited.add(`${nx},${ny}`)
-        queue.push([nx, ny])
-        if (map[nx][ny] === 9) reachableNines.add(`${nx},${ny}`)
+        visited.add(`${nx},${ny}`);
+        queue.push([nx, ny]);
+        if (map[nx][ny] === 9) reachableNines.add(`${nx},${ny}`);
       }
     }
   }
 
-  return reachableNines.size
-}
-
+  return reachableNines.size;
+};
 
 const dfsFindPaths = (x, y, currentPath, visited, paths) => {
-  const currentValue = map[x][y]
+  const currentValue = map[x][y];
 
   if (currentValue === 9) {
-    paths.push([...currentPath])
-    return
+    paths.push([...currentPath]);
+    return;
   }
 
   for (const [dx, dy] of directions) {
-    const nx = x + dx
-    const ny = y + dy
+    const nx = x + dx;
+    const ny = y + dy;
 
     if (isValidPosition(nx, ny, currentValue, visited)) {
-      visited.add(`${nx},${ny}`)
-      currentPath.push([nx, ny])
-      dfsFindPaths(nx, ny, currentPath, visited, paths)
-      currentPath.pop()
-      visited.delete(`${nx},${ny}`)
+      visited.add(`${nx},${ny}`);
+      currentPath.push([nx, ny]);
+      dfsFindPaths(nx, ny, currentPath, visited, paths);
+      currentPath.pop();
+      visited.delete(`${nx},${ny}`);
     }
   }
-}
-
+};
 
 const findAllPaths = (x, y) => {
-  const paths = []
-  const visited = new Set([`${x},${y}`])
+  const paths = [];
+  const visited = new Set([`${x},${y}`]);
 
-  dfsFindPaths(x, y, [[x, y]], visited, paths)
-  return paths.length
-}
-
+  dfsFindPaths(x, y, [[x, y]], visited, paths);
+  return paths.length;
+};
 
 const day10 = () => {
-  let count = 0
+  let count = 0;
 
   for (let row = 0; row < rows; row++)
     for (let col = 0; col < cols; col++)
-      if (map[row][col] === 0) count += bfsPathsToNine(row, col)
+      if (map[row][col] === 0) count += bfsPathsToNine(row, col);
 
-  return count
-}
-
+  return count;
+};
 
 // --------------------------------------------------------
 
-
 const day10Two = () => {
-  let count = 0
+  let count = 0;
 
   for (let row = 0; row < rows; row++)
     for (let col = 0; col < cols; col++)
-      if (map[row][col] === 0) count += findAllPaths(row, col, rows, cols, map)
+      if (map[row][col] === 0) count += findAllPaths(row, col, rows, cols, map);
 
-  return count
-}
-
+  return count;
+};
 
 //const fileInput = './2024/day10/example.txt' // 36 - 81
-const fileInput = './2024/day10/input.txt' // 786 - 1722
+const fileInput = './2024/day10/input.txt'; // 786 - 1722
 
-const map = getMap(fileInput)
-const rows = map.length
-const cols = map[0].length
+const map = getMap(fileInput);
+const rows = map.length;
+const cols = map[0].length;
 
-console.log(day10(fileInput))
-console.log(day10Two(fileInput))
+console.log(day10(fileInput));
+console.log(day10Two(fileInput));

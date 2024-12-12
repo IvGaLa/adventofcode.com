@@ -47,50 +47,57 @@ Using your new knowledge of elephant hiding spots, determine which equations cou
 
 */
 
-import { _readInput } from '../../lib.js'
+import { _readInput } from '../../lib.js';
 
 const getEquations = (data) => {
   return data
-    .map(row => row.split(': '))
-    .map(([key, values]) => [Number(key), values.split(' ').map(Number)])
-}
+    .map((row) => row.split(': '))
+    .map(([key, values]) => [Number(key), values.split(' ').map(Number)]);
+};
 
 const calculate = (numbers, operator, current, target, supportOr) => {
-  if (target === current && numbers.length === 0) return true
-  if (current > target) return false
-  if (numbers.length === 0) return false
+  if (target === current && numbers.length === 0) return true;
+  if (current > target) return false;
+  if (numbers.length === 0) return false;
 
-  if (operator === '+') current += numbers[0]
-  else if (operator === '*') current *= numbers[0]
-  else if (operator === '|') current = Number(`${current}${numbers[0]}`)
+  if (operator === '+') current += numbers[0];
+  else if (operator === '*') current *= numbers[0];
+  else if (operator === '|') current = Number(`${current}${numbers[0]}`);
 
-  return calculate(numbers.slice(1), '*', current, target, supportOr) ||
+  return (
+    calculate(numbers.slice(1), '*', current, target, supportOr) ||
     calculate(numbers.slice(1), '+', current, target, supportOr) ||
     (supportOr && calculate(numbers.slice(1), '|', current, target, supportOr))
-}
+  );
+};
 
-const isPossible = ([result, nums]) => calculate(nums, '+', 0, result, false)
+const isPossible = ([result, nums]) => calculate(nums, '+', 0, result, false);
 
-const sumResult = (arr, eq) => eq.filter(arr).map(equation => equation[0]).reduce((sum, curr) => sum += curr, 0)
+const sumResult = (arr, eq) =>
+  eq
+    .filter(arr)
+    .map((equation) => equation[0])
+    .reduce((sum, curr) => (sum += curr), 0);
 
 const day07 = (fileInput) => {
-  const _data = _readInput(fileInput)
-  const equations = getEquations(_data)
-  return sumResult(isPossible, equations)
-}
+  const _data = _readInput(fileInput);
+  const equations = getEquations(_data);
+  return sumResult(isPossible, equations);
+};
 
 // ------------------------------------------------------------
 
-const isPossibleWithOr = ([result, nums]) => calculate(nums, '+', 0, result, true)
+const isPossibleWithOr = ([result, nums]) =>
+  calculate(nums, '+', 0, result, true);
 
 const day07Two = (fileInput) => {
-  const _data = _readInput(fileInput)
-  const equations = getEquations(_data)
-  return sumResult(isPossibleWithOr, equations)
-}
+  const _data = _readInput(fileInput);
+  const equations = getEquations(_data);
+  return sumResult(isPossibleWithOr, equations);
+};
 
 //const fileInput = './2024/day07/example.txt' // 3749 - 11387
-const fileInput = './2024/day07/input.txt'
+const fileInput = './2024/day07/input.txt';
 
-console.log(day07(fileInput)) // 12839601725877
-console.log(day07Two(fileInput)) // 149956401519484
+console.log(day07(fileInput)); // 12839601725877
+console.log(day07Two(fileInput)); // 149956401519484

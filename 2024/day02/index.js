@@ -54,77 +54,76 @@ Update your analysis by handling situations where the Problem Dampener can remov
 
 */
 
-import { _readInput } from '../../lib.js'
-
+import { _readInput } from '../../lib.js';
 
 const getReports = (_data) => {
-  const reports = []
-  _data.map(report => {
-    reports.push(report.split(' ').map(Number))
-  })
-  return reports
-}
+  const reports = [];
+  _data.map((report) => {
+    reports.push(report.split(' ').map(Number));
+  });
+  return reports;
+};
 
-const calcDifference = (a, b) => (Math.abs(a - b) >= 1 && Math.abs(a - b) <= 3)
-const isIncreasing = (a, b) => (a > b) && calcDifference(a, b)
-const isDecreasing = (a, b) => (a < b) && calcDifference(a, b)
+const calcDifference = (a, b) => Math.abs(a - b) >= 1 && Math.abs(a - b) <= 3;
+const isIncreasing = (a, b) => a > b && calcDifference(a, b);
+const isDecreasing = (a, b) => a < b && calcDifference(a, b);
 
 const isSafeReport = (report) => {
-  const increases = report.every((_, i, rep) => i === 0 || isIncreasing(rep[i], rep[i - 1]))
-  const decreases = report.every((_, i, rep) => i === 0 || isDecreasing(rep[i], rep[i - 1]))
+  const increases = report.every(
+    (_, i, rep) => i === 0 || isIncreasing(rep[i], rep[i - 1]),
+  );
+  const decreases = report.every(
+    (_, i, rep) => i === 0 || isDecreasing(rep[i], rep[i - 1]),
+  );
 
-  return (increases || decreases)
-}
+  return increases || decreases;
+};
 
 const day02 = (fileInput) => {
-  const _data = _readInput(fileInput)
-  const reports = getReports(_data)
+  const _data = _readInput(fileInput);
+  const reports = getReports(_data);
 
-  let count = 0
+  let count = 0;
   for (const report of reports) {
-    isSafeReport(report) && count++
+    isSafeReport(report) && count++;
   }
 
-  return count // 526
-}
-
+  return count; // 526
+};
 
 // ----------------------------------------------------------------------------------
-
 
 const safeWithRemove = (report) => {
   for (let i = 0; i < report.length; i++) {
     const rep = report.slice(0, i).concat(report.slice(i + 1));
-    if (isSafeReport(rep)) return true
+    if (isSafeReport(rep)) return true;
   }
-  return false
-}
-
+  return false;
+};
 
 const day02Two = (fileInput) => {
-  const _data = _readInput(fileInput)
-  const reports = getReports(_data)
+  const _data = _readInput(fileInput);
+  const reports = getReports(_data);
 
-  let count = 0
-  const falsePositive = []
+  let count = 0;
+  const falsePositive = [];
   for (const report of reports) {
     if (isSafeReport(report)) {
-      count++
+      count++;
     } else {
-      falsePositive.push(report)
+      falsePositive.push(report);
     }
   }
 
   for (const report of falsePositive) {
-    safeWithRemove(report) && count++
+    safeWithRemove(report) && count++;
   }
 
-  return count // 566
-}
-
+  return count; // 566
+};
 
 //const fileInput = './2024/day02/example.txt'
-const fileInput = './2024/day02/input.txt'
+const fileInput = './2024/day02/input.txt';
 
 console.log(day02(fileInput));
 console.log(day02Two(fileInput));

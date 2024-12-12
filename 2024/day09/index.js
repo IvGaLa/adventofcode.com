@@ -71,20 +71,24 @@ Start over, now compacting the amphipod's hard drive using this new method inste
 
 */
 
-import { _readInput } from '../../lib.js'
-
+import { _readInput } from '../../lib.js';
 
 const getData = (fileInput) => {
   const data = _readInput(fileInput)[0].split('').map(Number);
   const arr = [];
   for (const [index, value] of data.entries())
-    index % 2 === 0 ? Array(value).fill(index / 2).map(value => arr.push(value)) : Array(value).fill('.').map(value => arr.push(value));
-  return arr
-}
-
+    index % 2 === 0
+      ? Array(value)
+          .fill(index / 2)
+          .map((value) => arr.push(value))
+      : Array(value)
+          .fill('.')
+          .map((value) => arr.push(value));
+  return arr;
+};
 
 const day09 = (fileInput) => {
-  const results = getData(fileInput)
+  const results = getData(fileInput);
 
   let lastIndex = -1;
   for (let i = results.length - 1; i >= 0; i--) {
@@ -95,15 +99,16 @@ const day09 = (fileInput) => {
     [results[i], results[lastIndex]] = [results[lastIndex], results[i]];
   }
 
-  return (results.splice(results.indexOf('.')), results).reduce((previous, value, index) => previous + value * index, 0);
-
-}
+  return (results.splice(results.indexOf('.')), results).reduce(
+    (previous, value, index) => previous + value * index,
+    0,
+  );
+};
 
 // --------------------------------------------------------
 
-
 const day09Two = (fileInput) => {
-  const fileResults = getData(fileInput)
+  const fileResults = getData(fileInput);
   const newIndexes = [];
   let lastIndex = fileResults.indexOf('.');
 
@@ -116,14 +121,18 @@ const day09Two = (fileInput) => {
 
     let totalNumbers = 0;
 
-    while (fileResults[i - totalNumbers] === number) totalNumbers++
+    while (fileResults[i - totalNumbers] === number) totalNumbers++;
 
-    let index = lastIndex = fileResults.indexOf('.', lastIndex);
-    let spaces
-    
+    let index = (lastIndex = fileResults.indexOf('.', lastIndex));
+    let spaces;
+
     while (index < fileResults.length) {
       spaces = 0;
-      while (index + spaces < fileResults.length && fileResults[index + spaces] === '.') spaces++;
+      while (
+        index + spaces < fileResults.length &&
+        fileResults[index + spaces] === '.'
+      )
+        spaces++;
       if (spaces >= totalNumbers) break;
       index = index + spaces + 1;
     }
@@ -140,12 +149,15 @@ const day09Two = (fileInput) => {
     }
   }
 
-  return fileResults.reduce((previous, value, index) => (value === '.' ? previous : previous + value * index), 0);
-}
-
+  return fileResults.reduce(
+    (previous, value, index) =>
+      value === '.' ? previous : previous + value * index,
+    0,
+  );
+};
 
 //const fileInput = './2024/day09/example.txt' // 1928 / 2858
-const fileInput = './2024/day09/input.txt'  // 6225730762521 / 6250605700557
+const fileInput = './2024/day09/input.txt'; // 6225730762521 / 6250605700557
 
 console.log(day09(fileInput));
 console.log(day09Two(fileInput));
