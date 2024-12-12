@@ -95,16 +95,16 @@ So, the lowest location number in this example is 35.
 What is the lowest location number that corresponds to any of the initial seed numbers?
 */
 
-import { _readInput } from '../../lib.js'
+import { _readInput } from '../../lib.js';
 
 const applyMap = (seed, map) => {
   for (const [destStart, srcStart, rangeLength] of map) {
     if (seed >= srcStart && seed < srcStart + rangeLength) {
-      return destStart + (seed - srcStart)
+      return destStart + (seed - srcStart);
     }
   }
-  return seed
-}
+  return seed;
+};
 const findLowestLocation = (seeds, maps) => {
   const locations = seeds.map((seed) => {
     for (const map of maps) {
@@ -112,87 +112,77 @@ const findLowestLocation = (seeds, maps) => {
     }
     console.log(seed);
 
-    return seed
-  })
+    return seed;
+  });
 
-  return Math.min(...locations)
-}
+  return Math.min(...locations);
+};
 
 const getMaps = (_data) => {
-  const maps = []
-  let index = -1
+  const maps = [];
+  let index = -1;
 
   for (let i = 1; i < _data.length; i++) {
-    let line = _data[i]
+    let line = _data[i];
     if (!Number.isInteger(Number(line[0]))) {
-      index++
-      maps[index] = []
+      index++;
+      maps[index] = [];
     } else {
-      maps[index].push(line.split(' ').map(Number))
+      maps[index].push(line.split(' ').map(Number));
     }
   }
 
-  return maps
-}
-
+  return maps;
+};
 
 const day05 = (inputFile) => {
-  const _data = _readInput(inputFile)
-  const seeds = _data[0].split(': ')[1].split(' ').map(Number)
-  const maps = getMaps(_data)
+  const _data = _readInput(inputFile);
+  const seeds = _data[0].split(': ')[1].split(' ').map(Number);
+  const maps = getMaps(_data);
 
-  return findLowestLocation(seeds, maps)
-}
-
+  return findLowestLocation(seeds, maps);
+};
 
 // -------------------------------
 
-
 const findLowestLocationRange = (seeds, maps) => {
-  let location = []
+  let location = [];
   for (let i = 0; i < seeds.length; i += 2) {
-    const start = seeds[i]
+    const start = seeds[i];
 
-    const length = seeds[i + 1]
+    const length = seeds[i + 1];
     for (let j = 0; j < length; j++) {
-      let seed = start + j
+      let seed = start + j;
 
       for (const map of maps) {
-        seed = applyMap(seed, map)
+        seed = applyMap(seed, map);
       }
 
       if (location.length > 125000) {
-        let min = Math.min(...location)
-        let __length = location.length
-        location = []
-        location.push(min)
-        console.log({ seed, min, __length })
+        let min = Math.min(...location);
+        let __length = location.length;
+        location = [];
+        location.push(min);
+        console.log({ seed, min, __length });
       }
-      location.push(seed)
-
+      location.push(seed);
     }
   }
 
-  return Math.min(...location)
-}
-
+  return Math.min(...location);
+};
 
 const day05Two = (inputFile) => {
   const _data = _readInput(inputFile);
-  const seeds = _data[0].split(': ')[1].split(' ').map(Number)
+  const seeds = _data[0].split(': ')[1].split(' ').map(Number);
 
   const maps = getMaps(_data);
 
   return findLowestLocationRange(seeds, maps);
 };
 
-
 //const inputFile = './2023/day05/example.txt'
-const inputFile = './2023/day05/input.txt'
+const inputFile = './2023/day05/input.txt';
 
 //console.log(day05(inputFile)); // 84470622
 console.log(day05Two(inputFile));
-
-
-
-

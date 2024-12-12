@@ -65,96 +65,117 @@ Process all of the original and copied scratchcards until no more scratchcards a
 
 */
 
-import { _readInput } from '../../lib.js'
-
-
+import { _readInput } from '../../lib.js';
 
 const day04 = () => {
-  const _fileInput = './2023/day04/input.txt' // Result: 21821
+  const _fileInput = './2023/day04/input.txt'; // Result: 21821
   //const _fileInput = './2023/day04/example.txt' // Result: 13
-  const _data = _readInput(_fileInput)
-  const values = []
-  _data.map(card => {
-    const winners = card.split(':')[1].split('|')[0].split(' ').filter(n => n.trim() != '').map(n => Number(n)).sort()
-    const numbers = card.split(':')[1].split('|')[1].split(' ').filter(n => n.trim() != '').map(n => Number(n)).sort()
+  const _data = _readInput(_fileInput);
+  const values = [];
+  _data.map((card) => {
+    const winners = card
+      .split(':')[1]
+      .split('|')[0]
+      .split(' ')
+      .filter((n) => n.trim() != '')
+      .map((n) => Number(n))
+      .sort();
+    const numbers = card
+      .split(':')[1]
+      .split('|')[1]
+      .split(' ')
+      .filter((n) => n.trim() != '')
+      .map((n) => Number(n))
+      .sort();
 
-    let sameNumber = 0
+    let sameNumber = 0;
 
-    winners.map(num => {
-      if (numbers.find(n => n == num)) sameNumber++
-    })
+    winners.map((num) => {
+      if (numbers.find((n) => n == num)) sameNumber++;
+    });
 
     if (sameNumber == 1) {
-      values.push(1)
+      values.push(1);
     } else if (sameNumber >= 2) {
-      values.push(Math.pow(2, sameNumber - 1))
+      values.push(Math.pow(2, sameNumber - 1));
     }
-  })
-  return values.reduce((previous, value) => previous + value, 0)
-}
+  });
+  return values.reduce((previous, value) => previous + value, 0);
+};
 
 // console.log(`Result: ${day04()}`);
 
-
-
 /**********************************************************************
-***********************************************************************
-*********************** Part two **************************************
-***********************************************************************
-**********************************************************************/
-
+ ***********************************************************************
+ *********************** Part two **************************************
+ ***********************************************************************
+ **********************************************************************/
 
 const getWinners = (winners, numbers) => {
-  let sameNumber = 0
-  winners.map(num => {
-    if (numbers.find(n => n == num)) sameNumber++
-  })
-  return sameNumber
-}
-
+  let sameNumber = 0;
+  winners.map((num) => {
+    if (numbers.find((n) => n == num)) sameNumber++;
+  });
+  return sameNumber;
+};
 
 const day04b = () => {
-  const _fileInput = './2023/day04/inputb.txt'
+  const _fileInput = './2023/day04/inputb.txt';
   //const _fileInput = './2023/day04/exampleb.txt'
-  const _data = _readInput(_fileInput)
-  const cards = []
+  const _data = _readInput(_fileInput);
+  const cards = [];
 
   // We load the cards with the number of winners
-  _data.map(card => {
-    const cardNumber = Number(card.split(':')[0].trim().split(' ')[1])
-    const winNumbers = card.split(':')[1].split('|')[0].split(' ').filter(n => n.trim() != '').map(Number)
-    const numbers = card.split(':')[1].split('|')[1].split(' ').filter(n => n.trim() != '').map(Number)
-    const winners = getWinners(winNumbers, numbers)
+  _data.map((card) => {
+    const cardNumber = Number(card.split(':')[0].trim().split(' ')[1]);
+    const winNumbers = card
+      .split(':')[1]
+      .split('|')[0]
+      .split(' ')
+      .filter((n) => n.trim() != '')
+      .map(Number);
+    const numbers = card
+      .split(':')[1]
+      .split('|')[1]
+      .split(' ')
+      .filter((n) => n.trim() != '')
+      .map(Number);
+    const winners = getWinners(winNumbers, numbers);
 
     cards.push({
       cardNumber,
       winNumbers,
       numbers,
       winners,
-      'quantity': 1 // By default there will be 1 unit of that card
-    })
-  })
-
-
+      quantity: 1, // By default there will be 1 unit of that card
+    });
+  });
 
   // I go through all the cards with winners
   for (let cardIndex = 0; cardIndex < cards.length; cardIndex++) {
-    const card = cards[cardIndex]
+    const card = cards[cardIndex];
     if (card.winners > 0) {
       // I go through the number of cards I have of that type.
-      for (let quantityCards = 1; quantityCards <= card.quantity; quantityCards++) {
+      for (
+        let quantityCards = 1;
+        quantityCards <= card.quantity;
+        quantityCards++
+      ) {
         // I add to the successive cards the number of winners who have the previous winning card
-        for (let numberOfWinner = (cardIndex + 1); numberOfWinner <= (cardIndex + card.winners); numberOfWinner++) {
-          cards[numberOfWinner].quantity = cards[numberOfWinner].quantity + 1
+        for (
+          let numberOfWinner = cardIndex + 1;
+          numberOfWinner <= cardIndex + card.winners;
+          numberOfWinner++
+        ) {
+          cards[numberOfWinner].quantity = cards[numberOfWinner].quantity + 1;
         }
       }
     }
   }
 
-  let totalCards = 0
-  cards.map(card => totalCards += card.quantity)
-  return totalCards
-
-}
+  let totalCards = 0;
+  cards.map((card) => (totalCards += card.quantity));
+  return totalCards;
+};
 
 console.log(`Result part two: ${day04b()}`); // Result part two: 5539496

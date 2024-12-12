@@ -36,36 +36,33 @@ What is the position of the character that causes Santa to first enter the basem
 
 */
 
-import { _readInput } from '../../lib.js'
+import { _readInput } from '../../lib.js';
 
 const getLine = (fileInput) => {
-  const _data = _readInput(fileInput)
-  return _data[0]
-}
-
+  const _data = _readInput(fileInput);
+  return _data[0];
+};
 
 const day01 = (fileInput) => {
-  const line = getLine(fileInput)
-  let count = 0
-  line.split('').map(chr => (chr === '(') ? count++ : (chr === ')') ? count-- : null)
-  return count
-}
+  const line = getLine(fileInput);
+  let count = 0;
+  line
+    .split('')
+    .map((chr) => (chr === '(' ? count++ : chr === ')' ? count-- : null));
+  return count;
+};
 
 // -------------------------------------------------------
 
-
 const day01Two = (fileInput) => {
-  const line = getLine(fileInput)
-  let count = 0
+  const line = getLine(fileInput);
+  let count = 0;
   for (let i = 0; i < line.length; i++) {
-    (line[i] === '(') ? count++ : (line[i] === ')') ? count-- : null
-    if (count === -1) return i + 1
+    line[i] === '(' ? count++ : line[i] === ')' ? count-- : null;
+    if (count === -1) return i + 1;
   }
+};
 
-}
-
-
-const fileInput = './2015/day01/input.txt'
+const fileInput = './2015/day01/input.txt';
 console.log(day01(fileInput)); // 280
 console.log(day01Two(fileInput)); // 1797
-

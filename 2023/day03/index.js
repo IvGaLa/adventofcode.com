@@ -60,97 +60,87 @@ What is the sum of all of the gear ratios in your engine schematic?
 
 */
 
-import { _readInput } from '../../lib.js'
-
+import { _readInput } from '../../lib.js';
 
 const findNumberPositions = (str, lineNumber) => {
   const regex = /\d+/g;
   const matches = [...str.matchAll(regex)];
-  return matches.map(match => {
-    const firstPosition = Number(match.index)
-    const lastPosition = Number(match.index + match[0].length - 1)
-    const number = Number(match[0])
-    return { number, firstPosition, lastPosition, lineNumber, str }
+  return matches.map((match) => {
+    const firstPosition = Number(match.index);
+    const lastPosition = Number(match.index + match[0].length - 1);
+    const number = Number(match[0]);
+    return { number, firstPosition, lastPosition, lineNumber, str };
   });
-
-}
-
+};
 
 const checkAdyacent = (positions) => {
-  const { number, firstPosition, lastPosition, str } = positions
-  const regexp = /[^0-9.]/
+  const { number, firstPosition, lastPosition, str } = positions;
+  const regexp = /[^0-9.]/;
 
-  let returned = 0
+  let returned = 0;
 
   // check in front
   if (firstPosition > 0)
-    if (regexp.test(str[firstPosition - 1])) returned = number
-
+    if (regexp.test(str[firstPosition - 1])) returned = number;
 
   // check behind
   if (lastPosition < str.length - 1)
-    if (regexp.test(str[lastPosition + 1])) returned = number
+    if (regexp.test(str[lastPosition + 1])) returned = number;
 
-  return returned
-}
+  return returned;
+};
 
 const checkDiagonal = (position, line) => {
-  const { firstPosition, lastPosition, number } = position
-  const regexp = /[^0-9.]/
-  const first = (firstPosition > 0) ? firstPosition - 1 : firstPosition
-  const last = (lastPosition < line.length) ? lastPosition + 1 : lastPosition
-  const _slice = line.slice(first, last + 1)
+  const { firstPosition, lastPosition, number } = position;
+  const regexp = /[^0-9.]/;
+  const first = firstPosition > 0 ? firstPosition - 1 : firstPosition;
+  const last = lastPosition < line.length ? lastPosition + 1 : lastPosition;
+  const _slice = line.slice(first, last + 1);
 
-  return (regexp.test(_slice)) ? number : 0
-
-}
-
-
+  return regexp.test(_slice) ? number : 0;
+};
 
 const day03 = () => {
-  const _fileInput = './2023/day03/input.txt'
+  const _fileInput = './2023/day03/input.txt';
   //const _fileInput = './2023/day03/example.txt' // 4361
-  const _data = _readInput(_fileInput)
-  const positions = []
-  const values = []
+  const _data = _readInput(_fileInput);
+  const positions = [];
+  const values = [];
   for (let i = 0; i < _data.length; i++) {
-    positions.push(findNumberPositions(_data[i], i))
+    positions.push(findNumberPositions(_data[i], i));
   }
 
-  positions.map(position => {
+  positions.map((position) => {
     if (position.length > 0) {
-      position.map(p => {
-        if ((p.lineNumber > 0) && (p.lineNumber < _data.length - 1)) {
-          values.push(checkDiagonal(p, _data[p.lineNumber - 1]))
-          values.push(checkDiagonal(p, _data[p.lineNumber + 1]))
+      position.map((p) => {
+        if (p.lineNumber > 0 && p.lineNumber < _data.length - 1) {
+          values.push(checkDiagonal(p, _data[p.lineNumber - 1]));
+          values.push(checkDiagonal(p, _data[p.lineNumber + 1]));
         }
         if (p.lineNumber == 0)
-          values.push(checkDiagonal(p, _data[p.lineNumber + 1]))
+          values.push(checkDiagonal(p, _data[p.lineNumber + 1]));
 
         if (p.lineNumber == _data.length - 1)
-          values.push(checkDiagonal(p, _data[p.lineNumber - 1]))
+          values.push(checkDiagonal(p, _data[p.lineNumber - 1]));
 
-        values.push(checkAdyacent(p))
-      })
+        values.push(checkAdyacent(p));
+      });
     }
+  });
 
-
-  })
-
-  return values.reduce((previous, value) => Number(previous + value))
-
-}
+  return values.reduce((previous, value) => Number(previous + value));
+};
 
 //console.log(`Result: ${day03()}`); // Result: 549908
 
 /******************************************************************
-************************* Part two ********************************
-*******************************************************************/
+ ************************* Part two ********************************
+ *******************************************************************/
 
 const day03b = () => {
-  const _fileInput = './2023/day03/inputb.txt'
+  const _fileInput = './2023/day03/inputb.txt';
   //const _fileInput = './2023/day03/example.txt' // 4361
-  const input = _readInput(_fileInput)
+  const input = _readInput(_fileInput);
   let rows = input.length;
   let cols = input[0].length;
 
@@ -160,7 +150,7 @@ const day03b = () => {
     j = j === -1 ? 0 : j;
     for (let k = 0; k < str.length; k++) {
       const ch = str.charAt(k);
-      if (ch === "*") {
+      if (ch === '*') {
         const ind = `${i}-${j + k}`;
         gearsDic[ind] = gearsDic[ind]
           ? [...gearsDic[ind], parseInt(num)]
@@ -169,9 +159,11 @@ const day03b = () => {
     }
   };
 
-  for (let i = 0; i < rows; i++) { // filas
-    for (let j = 0; j < cols; j++) { // caracteres
-      const n = "" + input[i][j];
+  for (let i = 0; i < rows; i++) {
+    // filas
+    for (let j = 0; j < cols; j++) {
+      // caracteres
+      const n = '' + input[i][j];
       if (isNaN(n)) continue;
 
       let num = n;
@@ -181,11 +173,11 @@ const day03b = () => {
       }
 
       const top =
-        i === 0 ? "" : input[i - 1].substring(j - num.length - 1, j + 1);
+        i === 0 ? '' : input[i - 1].substring(j - num.length - 1, j + 1);
       const btm =
-        i === rows - 1 ? "" : input[i + 1].substring(j - num.length - 1, j + 1);
-      const lft = input[i][j - num.length - 1] || "";
-      const rgt = input[i][j] || "";
+        i === rows - 1 ? '' : input[i + 1].substring(j - num.length - 1, j + 1);
+      const lft = input[i][j - num.length - 1] || '';
+      const rgt = input[i][j] || '';
 
       findGears(top, num, i - 1, j - num.length - 1);
       findGears(btm, num, i + 1, j - num.length - 1);
@@ -199,8 +191,7 @@ const day03b = () => {
     .map((x) => x[0] * x[1])
     .reduce((a, x) => a + x, 0);
 
-  return v
-}
-
+  return v;
+};
 
 console.log(`Result: ${day03b()}`); // Result: 81166799

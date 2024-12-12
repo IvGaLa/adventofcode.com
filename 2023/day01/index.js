@@ -46,52 +46,77 @@ What is the sum of all of the calibration values ?
 
  */
 
-import { dataDay01, dataDay01b } from "./input.js"
+import { dataDay01, dataDay01b } from './input.js';
 
 // Replace words like one, two... for 1, 2...
 const getReplaced = (_str, _find, _replace) => {
-  const pattern = new RegExp(_find.join("|"), "g");
+  const pattern = new RegExp(_find.join('|'), 'g');
   return _str.replace(pattern, (match) => _replace[_find.indexOf(match)]);
-}
+};
 
 const getFirst = (_str) => {
-  return _str.split('').find(chr => !Number.isNaN(Number(chr)))
-}
+  return _str.split('').find((chr) => !Number.isNaN(Number(chr)));
+};
 
 const getLast = (_str) => {
-  return _str.split('').findLast(chr => !Number.isNaN(Number(chr)))
-}
-
+  return _str.split('').findLast((chr) => !Number.isNaN(Number(chr)));
+};
 
 const getTotal = (values) => {
-  return values.reduce((previous, value) => previous + value)
-}
+  return values.reduce((previous, value) => previous + value);
+};
 
 const day01 = (data) => {
-  const values = data.map(_str => {
-    return Number(getFirst(_str) + getLast(_str))
-  })
-  return getTotal(values)
-}
-
+  const values = data.map((_str) => {
+    return Number(getFirst(_str) + getLast(_str));
+  });
+  return getTotal(values);
+};
 
 const day01b = (data) => {
-  const strFindFirst = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
-  const strReplaceFirst = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+  const strFindFirst = [
+    'one',
+    'two',
+    'three',
+    'four',
+    'five',
+    'six',
+    'seven',
+    'eight',
+    'nine',
+  ];
+  const strReplaceFirst = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
-  const strFindLast = ['enin', 'thgie', 'neves', 'xis', 'evif', 'ruof', 'eerht', 'owt', 'eno']
-  const strReplaceLast = ['9', '8', '7', '6', '5', '4', '3', '2', '1']
+  const strFindLast = [
+    'enin',
+    'thgie',
+    'neves',
+    'xis',
+    'evif',
+    'ruof',
+    'eerht',
+    'owt',
+    'eno',
+  ];
+  const strReplaceLast = ['9', '8', '7', '6', '5', '4', '3', '2', '1'];
 
-
-  const values = data.map(_str => {
+  const values = data.map((_str) => {
     return Number(
-      getFirst(
-        getReplaced(_str, strFindFirst, strReplaceFirst)) +
-      getLast(
-        getReplaced(_str.split('').reverse().join(''), strFindLast, strReplaceLast).split('').reverse().join('')))
-  })
-  return getTotal(values)
-}
+      getFirst(getReplaced(_str, strFindFirst, strReplaceFirst)) +
+        getLast(
+          getReplaced(
+            _str.split('').reverse().join(''),
+            strFindLast,
+            strReplaceLast,
+          )
+            .split('')
+            .reverse()
+            .join(''),
+        ),
+    );
+  });
+  return getTotal(values);
+};
 
 console.log(`Result part one: ${day01(dataDay01)}`);
 console.log(`Result part two: ${day01b(dataDay01b)}`);

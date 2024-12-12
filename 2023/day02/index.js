@@ -50,81 +50,77 @@ The power of a set of cubes is equal to the numbers of red, green, and blue cube
 
 For each game, find the minimum set of cubes that must have been present. What is the sum of the power of these sets?
 */
-import { _readInput } from '../../lib.js'
-
+import { _readInput } from '../../lib.js';
 
 const getNumberPerColor = (_str, color) => {
   const regex = new RegExp(`\\b\\d+\\s${color}\\b`, 'g');
-  return Array.from(_str.matchAll(regex), match => match[0].split(' ')[0]);
-}
-
+  return Array.from(_str.matchAll(regex), (match) => match[0].split(' ')[0]);
+};
 
 const getGameIdCubes = (_str) => {
-  const [g, c] = _str.split(':')
-  const gameId = Number(g.split(' ')[1])
-  const cubes = c.split(';')
-  return { gameId, cubes }
-}
-
+  const [g, c] = _str.split(':');
+  const gameId = Number(g.split(' ')[1]);
+  const cubes = c.split(';');
+  return { gameId, cubes };
+};
 
 const day02 = () => {
-  const _fileInput = './2023/day02/input.txt'
-  const _data = _readInput(_fileInput)
-  const totalCube = { 'green': 13, 'red': 12, 'blue': 14 }
-  const values = []
+  const _fileInput = './2023/day02/input.txt';
+  const _data = _readInput(_fileInput);
+  const totalCube = { green: 13, red: 12, blue: 14 };
+  const values = [];
 
-  _data.map(game => {
-    const { gameId, cubes } = getGameIdCubes(game)
-    let isInvalid = false
+  _data.map((game) => {
+    const { gameId, cubes } = getGameIdCubes(game);
+    let isInvalid = false;
 
-    cubes.map(cube => {
-      let red = Number(getNumberPerColor(cube, 'red'))
-      let blue = Number(getNumberPerColor(cube, 'blue'))
-      let green = Number(getNumberPerColor(cube, 'green'))
-      if ((red > totalCube.red) || (blue > totalCube.blue) || (green > totalCube.green)) {
-        isInvalid = true
-        return
+    cubes.map((cube) => {
+      let red = Number(getNumberPerColor(cube, 'red'));
+      let blue = Number(getNumberPerColor(cube, 'blue'));
+      let green = Number(getNumberPerColor(cube, 'green'));
+      if (
+        red > totalCube.red ||
+        blue > totalCube.blue ||
+        green > totalCube.green
+      ) {
+        isInvalid = true;
+        return;
       }
-    })
+    });
 
-    if (!isInvalid) values.push(gameId)
+    if (!isInvalid) values.push(gameId);
 
-    isInvalid = false
-  })
-  return values.reduce((previous, value) => previous + value)
-}
-
-
+    isInvalid = false;
+  });
+  return values.reduce((previous, value) => previous + value);
+};
 
 const day02b = () => {
-  const _fileInput = './2023/day02/input2.txt'
-  const _data = _readInput(_fileInput)
-  const values = []
+  const _fileInput = './2023/day02/input2.txt';
+  const _data = _readInput(_fileInput);
+  const values = [];
 
-  _data.map(game => {
-    const { cubes } = getGameIdCubes(game)
-    const maxValues = { red: 0, blue: 0, green: 0 }
-    cubes.map(cube => {
-      const red = Number(getNumberPerColor(cube, 'red'))
-      const blue = Number(getNumberPerColor(cube, 'blue'))
-      const green = Number(getNumberPerColor(cube, 'green'))
+  _data.map((game) => {
+    const { cubes } = getGameIdCubes(game);
+    const maxValues = { red: 0, blue: 0, green: 0 };
+    cubes.map((cube) => {
+      const red = Number(getNumberPerColor(cube, 'red'));
+      const blue = Number(getNumberPerColor(cube, 'blue'));
+      const green = Number(getNumberPerColor(cube, 'green'));
 
-      if (red > maxValues.red) maxValues.red = red
-      if (green > maxValues.green) maxValues.green = green
-      if (blue > maxValues.blue) maxValues.blue = blue
-    })
-    values.push({ ...maxValues })
-    maxValues.red = 0
-    maxValues.green = 0
-    maxValues.blue = 0
-  })
-  return values.map(value => value.red * value.green * value.blue).reduce((previous, value) => previous + value)
-
-}
-
+      if (red > maxValues.red) maxValues.red = red;
+      if (green > maxValues.green) maxValues.green = green;
+      if (blue > maxValues.blue) maxValues.blue = blue;
+    });
+    values.push({ ...maxValues });
+    maxValues.red = 0;
+    maxValues.green = 0;
+    maxValues.blue = 0;
+  });
+  return values
+    .map((value) => value.red * value.green * value.blue)
+    .reduce((previous, value) => previous + value);
+};
 
 console.log(`Result: ${day02()}`); //Result: 2795
-console.log(`Result two: ${day02b()}`) //Result two: 75561
-
-
-
+console.log(`Result two: ${day02b()}`); //Result two: 75561
