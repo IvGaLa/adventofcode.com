@@ -202,13 +202,13 @@ const day12 = () => {
 
 // --------------------------------------------------------
 
-// const day12Two = () => {
-//   return '';
-// };
+const day12Two = () => {
+  return '';
+};
 
 //const fileInput = './2024/day12/example.txt'; // 1930 - 1206
 const fileInput = './2024/day12/input.txt'; // 1431316 -
 const map = _readInput(fileInput);
 
 console.log(day12());
-// console.log(day12Two(fileInput));
+console.log(day12Two(fileInput));
