@@ -78,165 +78,75 @@ Using the corrected prize coordinates, figure out how to win as many prizes as p
 import { _readInput } from '../../lib.js';
 
 const day13 = (fileInput) => {
-  const _data = _readInput(fileInput);
+  const data = _readInput(fileInput);
   let count = 0;
 
-  for (let i = 0; i < _data.length; i += 3) {
-    const [buttonALine, buttonBLine, prizeLine] = _data.slice(i, i + 3);
-    const aButton = parseButton(buttonALine);
-    const bButton = parseButton(buttonBLine);
-    const prize = parsePrize(prizeLine);
-    const result = findMinimumTokens(aButton, bButton, prize);
-
-    if (result > 0) count += result;
+  for (let i = 0; i < data.length; i += 3) {
+    const [a, b] = calculate(data, i);
+    if (Number.isInteger(a) && Number.isInteger(b) && a < 100 && b < 100)
+      count += 3 * a + b;
   }
 
   return count;
+};
+
+const parseLines = (data, i, sum = 0) => {
+  const [buttonALine, buttonBLine, prizeLine] = data.slice(i, i + 3);
+  const aButton = parseButton(buttonALine);
+  const bButton = parseButton(buttonBLine);
+  const prize = parsePrize(prizeLine);
+  prize[0] += sum;
+  prize[1] += sum;
+  return [aButton, bButton, prize];
+};
+
+const calculate = (data, i, sum = 0) => {
+  const [a, b, p] = parseLines(data, i, sum);
+  const [xA, yA] = a;
+  const [xB, yB] = b;
+  const [xP, yP] = p;
+
+  const determinant = xA * yB - xB * yA;
+
+  if (determinant === 0) return null;
+
+  const aNumerator = xP * yB - xB * yP;
+  const bNumerator = xA * yP - xP * yA;
+
+  const resultA = aNumerator / determinant;
+  const resultB = bNumerator / determinant;
+
+  return [resultA, resultB];
 };
 
 const parseButton = (line) =>
   line
     .match(/X\+(-?\d+), Y\+(-?\d+)/)
     .slice(1)
-    .map(Number)
-    .reduce((acc, val, idx) => {
-      acc[idx === 0 ? 'x' : 'y'] = val;
-      return acc;
-    }, {});
+    .map(Number);
 
 const parsePrize = (line) =>
   line
     .match(/X=(-?\d+), Y=(-?\d+)/)
     .slice(1)
-    .map(Number)
-    .reduce((acc, val, idx) => {
-      acc[idx === 0 ? 'x' : 'y'] = val;
-      return acc;
-    }, {});
-
-const findMinimumTokens = (a, b, prize) => {
-  const maxPresses = 100;
-  let minTokens = Infinity;
-  let count = 0;
-
-  for (let pressesA = 0; pressesA <= maxPresses; pressesA++) {
-    for (let pressesB = 0; pressesB <= maxPresses; pressesB++) {
-      const x = pressesA * a.x + pressesB * b.x;
-      const y = pressesA * a.y + pressesB * b.y;
-
-      if (x === prize.x && y === prize.y) {
-        const tokens = pressesA * 3 + pressesB;
-        if (tokens < minTokens) {
-          minTokens = tokens;
-          count += tokens;
-        }
-      }
-    }
-  }
-
-  return count;
-};
+    .map(Number);
 
 // --------------------------------------------------------
 
 const day13Two = (fileInput) => {
-  let input = _readInput(fileInput);
+  const data = _readInput(fileInput);
   let count = 0;
+  const sum = 10_000_000_000_000; // 10000000000000
 
-  for (let i = 0; i < input.length; i += 3) {
-    const [buttonALine, buttonBLine, prizeLine] = input.slice(i, i + 3);
-    const { x: ax, y: ay } = parseButton(buttonALine);
-    const { x: bx, y: by } = parseButton(buttonBLine);
-    const { x: px, y: py } = parsePrize(prizeLine);
-    const machine = {
-      a: [ax, ay],
-      b: [bx, by],
-      prize: [prizeAdd + px, prizeAdd + py],
-    };
-
-    count += solveMachine(machine);
+  for (let i = 0; i < data.length; i += 3) {
+    const [a, b] = calculate(data, i, sum);
+    if (Number.isInteger(a) && Number.isInteger(b)) count += 3 * a + b;
   }
 
   return count;
 };
 
-const solveMachine = (machine) => {
-  let matchingMoves;
-  let minVal;
-
-  const goal = 10000;
-
-  let minMove = Math.min(
-    Math.min(machine.a[0], machine.a[1]),
-    Math.min(machine.b[0], machine.b[1]),
-  );
-
-  let maxPress = Math.ceil(goal / minMove);
-
-  for (let a = 0; a <= maxPress; a++) {
-    for (let b = 0; b <= maxPress; b++) {
-      let x = machine.a[0] * a + machine.b[0] * b;
-      let y = machine.a[1] * a + machine.b[1] * b;
-
-      if (x > 0 && x === y) {
-        if (minVal == null || x < minVal) {
-          minVal = x;
-          matchingMoves = [a, b];
-        }
-      }
-    }
-  }
-
-  if (matchingMoves == null) {
-    return 0;
-  }
-
-  let a = matchingMoves[0];
-  let b = matchingMoves[1];
-
-  let x = machine.a[0] * a + machine.b[0] * b;
-  let y = machine.a[1] * a + machine.b[1] * b;
-
-  const mul = Math.floor(prizeAdd / x);
-
-  a = a * mul;
-  b = b * mul;
-
-  x = machine.a[0] * a + machine.b[0] * b;
-  y = machine.a[1] * a + machine.b[1] * b;
-
-  let startA = a;
-  let startB = b;
-
-  let maxPrize = Math.max(machine.prize[0], machine.prize[1]);
-  let maxDist = maxPrize - x;
-  let minStep = Math.min(
-    Math.min(machine.a[0], machine.a[1]),
-    Math.min(machine.b[0], machine.b[1]),
-  );
-
-  maxPress = Math.ceil(maxDist / minStep);
-
-  for (let aa = maxPress * -1; aa <= maxPress; aa++) {
-    for (let bb = maxPress * -1; bb <= maxPress; bb++) {
-      a = startA + aa;
-      b = startB + bb;
-
-      let x = machine.a[0] * a + machine.b[0] * b;
-      let y = machine.a[1] * a + machine.b[1] * b;
-
-      if (x === machine.prize[0] && y === machine.prize[1]) {
-        return a * 3 + b;
-      }
-    }
-  }
-
-  return 0;
-};
-
-const prizeAdd = 10_000_000_000_000;
-
-//const fileInput = './2024/day13/example.txt'; // 480
+//const fileInput = './2024/day13/example.txt'; // 480 - 875318608908
 const fileInput = './2024/day13/input.txt'; // 28138 - 108394825772874
 
 console.log(day13(fileInput));
