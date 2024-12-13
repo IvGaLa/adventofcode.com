@@ -4,6 +4,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "eslint": "npx eslint .",
+    "eslint:fix": "npx eslint . --fix",
     "template": "node template.js",
     "2015:01": "nodemon 2015/day01/index.js",
     "2023:01": "nodemon 2023/day01/index.js",
@@ -22,7 +24,8 @@
     "2024:09": "nodemon 2024/day09/index.js",
     "2024:10": "nodemon 2024/day10/index.js",
     "2024:11": "nodemon 2024/day11/index.js",
-    "2024:12": "nodemon 2024/day12/index.js"
+    "2024:12": "nodemon 2024/day12/index.js",
+    "2024:13": "nodemon 2024/day13/index.js"
   },
   "keywords": [],
   "author": "IvGaLa",
