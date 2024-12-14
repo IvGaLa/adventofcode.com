@@ -68,9 +68,9 @@ import { _readInput } from '../../lib.js'
 
 
 const day${day} = (fileInput) => {
-  const _data = _readInput(fileInput)
+  const data = _readInput(fileInput)
 
-  return _data
+  return data
 }
 
 
@@ -78,9 +78,9 @@ const day${day} = (fileInput) => {
 
 
 const day${day}Two = (fileInput) => {
-  const _data = _readInput(fileInput)
+  const data = _readInput(fileInput)
 
-  return _data
+  return data
 }
 
 
