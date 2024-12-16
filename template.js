@@ -4,6 +4,7 @@ import {
   writeFile,
   readFileSync,
   writeFileSync,
+  appendFile,
 } from 'fs';
 //import { readFile } from 'fs/promises';
 import { resolve } from 'path';
@@ -55,9 +56,13 @@ const createYearDirectory = (dirPath) => {
 };
 
 const createFile = (filename, input = '') => {
-  writeFile(filename, input, (err) => {
-    if (err) showError(3);
-  });
+  existsSync(filename)
+    ? appendFile(filename, input, (err) => {
+        showError(3);
+      })
+    : writeFile(filename, input, (err) => {
+        showError(3);
+      });
 };
 
 const templateString = `/*
