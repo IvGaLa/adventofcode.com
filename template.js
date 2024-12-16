@@ -58,10 +58,10 @@ const createYearDirectory = (dirPath) => {
 const createFile = (filename, input = '') => {
   existsSync(filename)
     ? appendFile(filename, input, (err) => {
-        showError(3);
+        if (err) showError(3);
       })
     : writeFile(filename, input, (err) => {
-        showError(3);
+        if (err) showError(3);
       });
 };
 
