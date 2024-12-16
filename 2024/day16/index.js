@@ -89,82 +89,74 @@ Analyze your map carefully. What is the lowest score a Reindeer could possibly g
 import { _readInput } from '../../lib.js';
 
 const DIRECTIONS = [
-  [0, 1, 'E'],
-  [1, 0, 'S'],
-  [0, -1, 'W'],
-  [-1, 0, 'N'],
+  [0, 1],
+  [1, 0],
+  [0, -1],
+  [-1, 0],
 ];
 
-const parseMaze = (fileInput) => {
-  const data = _readInput(fileInput);
+const TURN_COST = 1000;
+const STEP_COST = 1;
+const WALL = '#';
+const START = 'S';
+const END = 'E';
 
-  const maze = data.map((row) => row.split(''));
+const parseInput = (fileInput) => {
+  const maze = _readInput(fileInput).map((row) => row.split(''));
   const rows = maze.length;
   const cols = maze[0].length;
 
-  return [maze, rows, cols];
+  return [maze, rows, cols, ...getStartFinish(maze, rows, cols)];
 };
 
 const getStartFinish = (maze, rows, cols) => {
-  let start = [];
-  let end = [];
+  const start = [];
+  const end = [];
+
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      if (maze[r][c] === 'S') start = [r, c];
-      if (maze[r][c] === 'E') end = [r, c];
+      if (start.length === 0 || end.length === 0) {
+        if (maze[r][c] === START) start.push(r, c);
+        if (maze[r][c] === END) end.push(r, c);
+      } else {
+        return [start, end];
+      }
     }
   }
-  return [start, end];
 };
 
-const sortQueue = (q) => q.sort((a, b) => a[3] - b[3]);
-
-const bfs = (maze, rows, cols, start, end) => {
-  let queue = [];
+const day16 = (fileInput) => {
+  const [maze, rows, cols, start, [endRow, endCol]] = parseInput(fileInput);
+  const queue = [];
   const visited = new Set();
 
   for (let i = 0; i < 4; i++) {
-    const turnCost = i === 0 ? 0 : 1000;
-    queue.push([...start, i, turnCost, true]);
+    const turnCost = i === 0 ? 0 : TURN_COST;
+    queue.push([...start, i, turnCost]);
   }
 
   while (queue.length > 0) {
-    queue = [...sortQueue(queue)];
-    const [r, c, dir, score] = queue.shift();
+    queue.sort((a, b) => a[3] - b[3]);
+    const [row, col, dir, score] = queue.shift();
 
-    if (r === end[0] && c === end[1]) return score;
+    if (row === endRow && col === endCol) return score;
 
-    const stateKey = `${r},${c},${dir}`;
+    const stateKey = `${row},${col},${dir}`;
     if (visited.has(stateKey)) continue;
     visited.add(stateKey);
 
     for (let i = 0; i < 4; i++) {
-      const [dx, dy, _] = DIRECTIONS[i];
-      const newDir = i;
-      const turnCost = dir === newDir ? 0 : 1000;
-      const newRow = r + dx;
-      const newCol = c + dy;
+      const turnCost = dir === i ? 0 : TURN_COST;
+      const newRow = row + DIRECTIONS[i][0];
+      const newCol = col + DIRECTIONS[i][1];
+      const nextCell = maze[newRow][newCol];
 
-      if (
-        newRow >= 0 &&
-        newRow < rows &&
-        newCol >= 0 &&
-        newCol < cols &&
-        maze[newRow][newCol] !== '#'
-      ) {
-        queue.push([newRow, newCol, newDir, score + 1 + turnCost, false]);
-      }
+      if (0 <= newRow < rows && 0 <= newCol < cols && nextCell !== WALL)
+        queue.push([newRow, newCol, i, score + STEP_COST + turnCost]);
     }
   }
 
   return null;
-};
-
-const day16 = (fileInput) => {
-  const [maze, rows, cols] = parseMaze(fileInput);
-  let [start, end] = getStartFinish(maze, rows, cols);
-
-  return bfs(maze, rows, cols, start, end);
 };
 
 // --------------------------------------------------------
@@ -175,9 +167,9 @@ const day16 = (fileInput) => {
 //   return data;
 // };
 
-const fileInput = './2024/day16/example.txt'; // 7036
+//const fileInput = './2024/day16/example.txt'; // 7036
 //const fileInput = './2024/day16/example2.txt'; // 11048
-//const fileInput = './2024/day16/input.txt'; // 105496
+const fileInput = './2024/day16/input.txt'; // 105496
 
 console.log(day16(fileInput));
 //console.log(day16Two(fileInput));
