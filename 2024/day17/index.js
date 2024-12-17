@@ -60,12 +60,22 @@ Using the information provided by the debugger, initialize the registers to the 
 
 import { _readInput } from '../../lib.js';
 
-const adv = (numerator, denominator) => Math.floor(numerator / denominator);
-const bxl = (numA, numB) => numA ^ numB;
-const bst = (operand) => operand % 8;
-const bxc = (numA, numB) => numA ^ numB;
-const bdv = (numerator, denominator) => Math.floor(numerator / denominator);
-const cdv = (numerator, denominator) => Math.floor(numerator / denominator);
+const mod = (n, m) => ((n % m) + m) % m;
+
+const adv = (numerator, denominator) =>
+  Math.floor(numerator / Math.pow(2, denominator));
+
+const bxl = (numA, numB) => (numA ^ numB) >>> 0;
+
+const bst = (num) => mod(num, 8);
+
+const bxc = (numA, numB) => (numA ^ numB) >>> 0;
+
+const bdv = (numerator, denominator) =>
+  Math.floor(numerator / Math.pow(2, denominator));
+
+const cdv = (numerator, denominator) =>
+  Math.floor(numerator / Math.pow(2, denominator));
 
 const OPERATIONS = [adv, bxl, bst, null, bxc, null, bdv, cdv];
 
@@ -88,21 +98,18 @@ const getOperand = (o, a, b, c) => {
   if (o === 6) return c;
 };
 
-const day17 = (fileInput) => {
-  let [regA, regB, regC, program] = parseInput(fileInput);
+const day17 = (regA, regB, regC, program) => {
   let output = [];
   let i = 0;
 
   while (i < program.length) {
     const instruction = program[i];
     const operand = program[i + 1];
+    const newOperand = getOperand(operand, regA, regB, regC);
 
     switch (instruction) {
       case 0:
-        regA = OPERATIONS[instruction](
-          regA,
-          Math.pow(2, getOperand(operand, regA, regB, regC)),
-        );
+        regA = OPERATIONS[instruction](regA, newOperand);
         break;
 
       case 1:
@@ -110,7 +117,7 @@ const day17 = (fileInput) => {
         break;
 
       case 2:
-        regB = OPERATIONS[instruction](getOperand(operand, regA, regB, regC));
+        regB = OPERATIONS[instruction](newOperand);
         break;
 
       case 3:
@@ -125,21 +132,15 @@ const day17 = (fileInput) => {
         break;
 
       case 5:
-        output.push(getOperand(operand, regA, regB, regC) % 8);
+        output.push(mod(newOperand, 8));
         break;
 
       case 6:
-        regB = OPERATIONS[instruction](
-          regA,
-          Math.pow(2, getOperand(operand, regA, regB, regC)),
-        );
+        regB = OPERATIONS[instruction](regA, newOperand);
         break;
 
       case 7:
-        regC = OPERATIONS[instruction](
-          regA,
-          Math.pow(2, getOperand(operand, regA, regB, regC)),
-        );
+        regC = OPERATIONS[instruction](regA, newOperand);
         break;
     }
 
@@ -151,14 +152,30 @@ const day17 = (fileInput) => {
 
 // --------------------------------------------------------
 
-// const day17Two = (fileInput) => {
-//   const data = _readInput(fileInput);
+const day17Two = (regA, regB, regC, program) => {
+  const queu = [{ result: '', len: 0 }];
 
-//   return data;
-// };
+  while (queu.length) {
+    const queuElement = queu.shift();
+
+    if (queuElement.len === program.length)
+      return parseInt(queuElement.result, 2);
+
+    const start = parseInt(queuElement.result + '000', 2);
+    const end = parseInt(queuElement.result + '111', 2);
+    const expect = program.slice((queuElement.len + 1) * -1).join(',');
+
+    for (regA = start; regA <= end; regA++)
+      if (day17(regA, regB, regC, program) === expect)
+        queu.push({ result: regA.toString(2), len: queuElement.len + 1 });
+  }
+};
 
 //const fileInput = './2024/day17/example.txt'; // 4,6,3,5,6,3,5,2,1,0
-const fileInput = './2024/day17/input.txt'; // 4,3,2,6,4,5,3,2,4
+//const fileInput = './2024/day17/example2.txt'; // 117440
+const fileInput = './2024/day17/input.txt';
 
-console.log(day17(fileInput));
-//console.log(day17Two(fileInput));
+let [regA, regB, regC, program] = parseInput(fileInput);
+
+console.log(day17(regA, regB, regC, program)); // 4,3,2,6,4,5,3,2,4
+console.log(day17Two(regA, regB, regC, program)); // 164540892147389
