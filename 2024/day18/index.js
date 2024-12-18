@@ -101,12 +101,12 @@ const data = {
   example: {
     SIZE: 6,
     LIMIT: 12,
-    FILEINPUT: './2024/day18/example.txt', // 22
+    FILEINPUT: './2024/day18/example.txt', // 22 - 6,1
   },
   input: {
     SIZE: 70,
     LIMIT: 1024,
-    FILEINPUT: './2024/day18/input.txt', // 260
+    FILEINPUT: './2024/day18/input.txt', // 260 - 24,48
   },
 };
 
@@ -125,13 +125,13 @@ const DIRECTIONS = [
 ];
 
 const parseInput = (fileInput) =>
-  _readInput(fileInput)
-    .map((el) => el.split(',').map(Number))
-    .slice(0, LIMIT);
+  _readInput(fileInput).map((el) => el.split(',').map(Number));
 
 const createMap = (fileInput) => {
   const map = Array.from({ length: xSize }, () => Array(ySize).fill(EMPTY));
-  parseInput(fileInput).forEach(([x, y]) => (map[y][x] = WALL));
+  parseInput(fileInput)
+    .slice(0, LIMIT)
+    .forEach(([x, y]) => (map[y][x] = WALL));
   return map;
 };
 
@@ -179,11 +179,20 @@ const day18 = (fileInput) => {
 
 // --------------------------------------------------------
 
-// const day18Two = (fileInput) => {
-//   const data = _readInput(fileInput);
+const day18Two = (fileInput) => {
+  const nextCoords = parseInput(fileInput);
+  const map = createMap(fileInput);
+  const start = [0, 0];
+  const end = [SIZE, SIZE];
+  let latest = start;
 
-//   return data;
-// };
+  while (findPath(map, start, end) !== -1) {
+    latest = nextCoords.shift();
+    map[latest[1]][latest[0]] = WALL;
+  }
+
+  return latest.join(',');
+};
 
 console.log(day18(FILEINPUT));
-//console.log(day18Two(FILEINPUT));
+console.log(day18Two(FILEINPUT));
