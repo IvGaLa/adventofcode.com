@@ -168,19 +168,13 @@ const findPath = (map, start, end) => {
   return -1;
 };
 
-const day18 = (fileInput) => {
-  const map = createMap(fileInput);
-  const start = [0, 0];
-  const end = [SIZE, SIZE];
-  const steps = findPath(map, start, end);
-
-  return steps;
-};
+const day18 = (fileInput) =>
+  findPath(createMap(fileInput), [0, 0], [SIZE, SIZE]);
 
 // --------------------------------------------------------
 
 const day18Two = (fileInput) => {
-  const nextCoords = parseInput(fileInput);
+  const nextCoords = parseInput(fileInput).slice(LIMIT);
   const map = createMap(fileInput);
   const start = [0, 0];
   const end = [SIZE, SIZE];
