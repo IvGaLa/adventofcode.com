@@ -72,7 +72,9 @@ const day01 = (fileInput) => {
     const steps = direction === 'L' ? -n : n;
 
     position = (position + steps) % 100;
-    if (position < 100) position += 100;
+    if (position < 0) {
+      position += 100;
+    }
 
     if (position % 100 === 0) count++;
   });
