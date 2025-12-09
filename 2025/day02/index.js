@@ -61,66 +61,35 @@ What do you get if you add up all of the invalid IDs using these new rules?
 
 import { _readInput } from '../../lib.js';
 
-const toBI = (bi) => BigInt(bi);
-
-const ceilDiv = (a, b) => {
-  if (a % b === 0n) return a / b;
-  return a / b + 1n;
-};
-
-const floorDiv = (a, b) => a / b;
-
 const getRanges = ([line]) =>
   line.split(',').map((el) => {
     const [s, e] = el.split('-');
-    return [toBI(s), toBI(e), e.length];
+    return [s, e];
   });
 
-const getMaxRange = (ranges) =>
-  ranges.reduce((max, [, end]) => (end > max ? end : max), 0);
-
-const getMaxRangeLength = (max) => max.toString().length;
-
 const day02 = (ranges) => {
-  const maxRange = getMaxRange(ranges);
-  const maxRangeLength = getMaxRangeLength(maxRange);
-  const maxBlockLength = Math.floor(maxRangeLength / 2);
+  let count = 0;
 
-  let sum = 0n;
-
-  for (let blockLength = 1; blockLength <= maxBlockLength; blockLength++) {
-    const power10 = toBI(10) ** toBI(blockLength);
-    const factor = power10 + 1n;
-
-    const blockMinValue = toBI(10) ** toBI(blockLength - 1);
-    const blockMaxValue = toBI(10) ** toBI(blockLength) - 1n;
-
-    for (const [start, end] of ranges) {
-      const blockMinFromRange = ceilDiv(start, factor);
-      const blockMaxFromRange = floorDiv(end, factor);
-
-      const blockFinalMin =
-        blockMinFromRange > blockMinValue ? blockMinFromRange : blockMinValue;
-
-      const blockFinalMax =
-        blockMaxFromRange < blockMaxValue ? blockMaxFromRange : blockMaxValue;
-
-      if (blockFinalMin <= blockFinalMax) {
-        const count = blockFinalMax - blockFinalMin + 1n;
-        const sumBlocks = ((blockFinalMin + blockFinalMax) * count) / 2n;
-        const sumRange = sumBlocks * factor;
-        sum += sumRange;
-      }
+  ranges.map((x) => {
+    const start = +x[0];
+    const end = +x[1];
+    for (let num = start; num <= end; num++) {
+      const str = num.toString();
+      if (
+        str.length % 2 == 0 &&
+        str.slice(0, str.length / 2) == str.slice(str.length / 2)
+      )
+        count += num;
     }
-  }
+  });
 
-  return sum.toString();
+  return count.toString();
 };
 
 // --------------------------------------------------------
 
 const day02Two = (ranges) => {
-  let count = toBI(0);
+  let count = 0;
 
   ranges.map((x) => {
     const start = x[0];
