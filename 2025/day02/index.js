@@ -81,8 +81,7 @@ const getMaxRange = (ranges) =>
 
 const getMaxRangeLength = (max) => max.toString().length;
 
-const day02 = (fileInput) => {
-  const ranges = getRanges(_readInput(fileInput));
+const day02 = (ranges) => {
   const maxRange = getMaxRange(ranges);
   const maxRangeLength = getMaxRangeLength(maxRange);
   const maxBlockLength = Math.floor(maxRangeLength / 2);
@@ -120,14 +119,36 @@ const day02 = (fileInput) => {
 
 // --------------------------------------------------------
 
-const day02Two = (fileInput) => {
-  const data = _readInput(fileInput);
+const day02Two = (ranges) => {
+  let count = toBI(0);
 
-  return data;
+  ranges.map((x) => {
+    const start = x[0];
+    const end = x[1];
+    for (let num = start; num <= end; num++) {
+      const str = num.toString();
+      for (let i = 1; i <= str.length / 2; i++) {
+        if (str.length % i === 0) {
+          let j = i;
+          for (; j < str.length; j += i)
+            if (str.slice(j - i, j) !== str.slice(j, j + i)) break;
+
+          if (j >= str.length) {
+            count += num;
+            break;
+          }
+        }
+      }
+    }
+  });
+
+  return count.toString();
 };
 
 //const fileInput = './2025/day02/example.txt';
 const fileInput = './2025/day02/input.txt';
 
-console.log(day02(fileInput));
-//console.log(day02Two(fileInput));
+const ranges = getRanges(_readInput(fileInput));
+
+console.log(day02(ranges));
+console.log(day02Two(ranges));
