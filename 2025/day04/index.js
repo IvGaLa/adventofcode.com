@@ -39,7 +39,143 @@ x.x.@@@.x.
 Consider your complete diagram of the paper roll locations. How many rolls of paper can be accessed by a forklift?
 
 
+--- Part Two ---
+Now, the Elves just need help accessing as much of the paper as they can.
+
+Once a roll of paper can be accessed by a forklift, it can be removed. Once a roll of paper is removed, the forklifts might be able to access more rolls of paper, which they might also be able to remove. How many total rolls of paper could the Elves remove if they keep repeating this process?
+
+Starting with the same example as above, here is one way you could remove as many rolls of paper as possible, using highlighted @ to indicate that a roll of paper is about to be removed, and using x to indicate that a roll of paper was just removed:
+
+Initial state:
+..@@.@@@@.
+@@@.@.@.@@
+@@@@@.@.@@
+@.@@@@..@.
+@@.@@@@.@@
+.@@@@@@@.@
+.@.@.@.@@@
+@.@@@.@@@@
+.@@@@@@@@.
+@.@.@@@.@.
+
+Remove 13 rolls of paper:
+..xx.xx@x.
+x@@.@.@.@@
+@@@@@.x.@@
+@.@@@@..@.
+x@.@@@@.@x
+.@@@@@@@.@
+.@.@.@.@@@
+x.@@@.@@@@
+.@@@@@@@@.
+x.x.@@@.x.
+
+Remove 12 rolls of paper:
+.......x..
+.@@.x.x.@x
+x@@@@...@@
+x.@@@@..x.
+.@.@@@@.x.
+.x@@@@@@.x
+.x.@.@.@@@
+..@@@.@@@@
+.x@@@@@@@.
+....@@@...
+
+Remove 7 rolls of paper:
+..........
+.x@.....x.
+.@@@@...xx
+..@@@@....
+.x.@@@@...
+..@@@@@@..
+...@.@.@@x
+..@@@.@@@@
+..x@@@@@@.
+....@@@...
+
+Remove 5 rolls of paper:
+..........
+..x.......
+.x@@@.....
+..@@@@....
+...@@@@...
+..x@@@@@..
+...@.@.@@.
+..x@@.@@@x
+...@@@@@@.
+....@@@...
+
+Remove 2 rolls of paper:
+..........
+..........
+..x@@.....
+..@@@@....
+...@@@@...
+...@@@@@..
+...@.@.@@.
+...@@.@@@.
+...@@@@@x.
+....@@@...
+
+Remove 1 roll of paper:
+..........
+..........
+...@@.....
+..x@@@....
+...@@@@...
+...@@@@@..
+...@.@.@@.
+...@@.@@@.
+...@@@@@..
+....@@@...
+
+Remove 1 roll of paper:
+..........
+..........
+...x@.....
+...@@@....
+...@@@@...
+...@@@@@..
+...@.@.@@.
+...@@.@@@.
+...@@@@@..
+....@@@...
+
+Remove 1 roll of paper:
+..........
+..........
+....x.....
+...@@@....
+...@@@@...
+...@@@@@..
+...@.@.@@.
+...@@.@@@.
+...@@@@@..
+....@@@...
+
+Remove 1 roll of paper:
+..........
+..........
+..........
+...x@@....
+...@@@@...
+...@@@@@..
+...@.@.@@.
+...@@.@@@.
+...@@@@@..
+....@@@...
+Stop once no more rolls of paper are accessible by a forklift. In this example, a total of 43 rolls of paper can be removed.
+
+Start with your original diagram. How many rolls of paper in total can be removed by the Elves and their forklifts?
+
 */
+
+/***********************************************
+ ***********************************************
+ * Yes, it can be optimized, but it's the AoC! *
+ ***********************************************
+ ***********************************************/
 
 import { _readInput } from '../../lib.js';
 
@@ -89,13 +225,42 @@ function day04(grid) {
 // --------------------------------------------------------
 
 const day04Two = (grid) => {
-  return grid;
+  let count = 0;
+  const gridLength = grid.length;
+  for (let row = 0; row < gridLength; row++) {
+    const lineLength = grid[row].length;
+    for (let col = 0; col < lineLength; col++) {
+      if (grid[row][col] !== ROLL) continue; // Check if actual cell is a ROLL
+
+      let rollNum = 0;
+      for (const [dirRow, dirCol] of DIRECTIONS) {
+        const newRow = row + dirRow;
+        const newCol = col + dirCol;
+        if (
+          newRow >= 0 &&
+          newCol >= 0 &&
+          newRow < gridLength &&
+          newCol < lineLength &&
+          grid[newRow][newCol] === ROLL
+        )
+          rollNum++;
+      }
+
+      if (rollNum < 4) {
+        count++;
+        grid[row][col] = '.';
+        row = 0;
+        col = 0;
+      }
+    }
+  }
+  return count;
 };
 
-//const fileInput = './2025/day04/example.txt'; // 13 -
-const fileInput = './2025/day04/input.txt'; // 1478 -
+//const fileInput = './2025/day04/example.txt'; // 13 - 43
+const fileInput = './2025/day04/input.txt'; // 1478 - 9120
 
 const grid = getMap(fileInput);
 
 console.log(day04(grid));
-//console.log(day04Two(grid));
+console.log(day04Two(grid));
