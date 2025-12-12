@@ -87,10 +87,7 @@ const day06 = ([numbers, operators]) => {
 // Using IA (VScode Chat Agent)
 const day06Two = (fileInput) => {
   // Read raw input preserving spaces
-  const raw = _readInput(fileInput);
-  if (raw.at(-1) === '') raw.pop();
-
-  const dataLines = raw;
+  const dataLines = _readInput(fileInput);
 
   // Pad lines to same width
   const height = dataLines.length;
@@ -110,7 +107,7 @@ const day06Two = (fileInput) => {
   // Scan columns right-to-left grouping contiguous non-separator columns into problems
   for (let c = width - 1; c >= 0; ) {
     if (isSep[c]) {
-      c -= 1;
+      c--;
       continue;
     }
 
@@ -118,7 +115,7 @@ const day06Two = (fileInput) => {
     const group = [];
     while (c >= 0 && !isSep[c]) {
       group.push(c);
-      c -= 1;
+      c--;
     }
 
     // For this problem, build numbers from each column (top-to-bottom)
@@ -133,8 +130,8 @@ const day06Two = (fileInput) => {
     // find operator for this problem somewhere in the group's columns
     let op = null;
     for (const col of group) {
-      const ch = opLine[col];
-      if (ch && ch.trim() !== '') {
+      const ch = opLine[col].trim();
+      if (ch) {
         op = ch;
         break;
       }
@@ -152,4 +149,4 @@ const day06Two = (fileInput) => {
 const fileInput = './2025/day06/input.txt'; // 6891729672676 - 9770311947567
 
 console.log(day06(getNumbers(fileInput)));
-console.log(day06Two(fileInput));
+console.log('9770311947567 - ', day06Two(fileInput));
