@@ -238,20 +238,22 @@ const day07Two = (tree) => {
   const colLength = tree[0].length;
   const memo = new Map();
 
-  function dfs(x, y) {
-    if (x < 0 || x >= rowLengt || y < 0 || y >= colLength) return 1;
+  function dfs(row, col) {
+    if (row < 0 || row >= rowLengt || col < 0 || col >= colLength) return 1;
 
-    const cell = tree[x][y];
-    const key = `${x}-${y}`;
+    const cell = tree[row][col];
+    const key = `${row}-${col}`;
 
-    if (cell === START) return dfs(x + 1, y);
+    if (cell === START) return dfs(row + 1, col);
 
     if (cell !== EMPTY && cell !== SPLITTER) return 1;
 
     if (memo.has(key)) return memo.get(key);
 
     const count =
-      cell === SPLITTER ? dfs(x + 1, y - 1) + dfs(x + 1, y + 1) : dfs(x + 1, y);
+      cell === SPLITTER
+        ? dfs(row + 1, col - 1) + dfs(row + 1, col + 1)
+        : dfs(row + 1, col);
 
     memo.set(key, count);
 
