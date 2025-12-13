@@ -137,19 +137,20 @@ const day08Two = (fileInput) => {
     const indexA = circuitIndex[nodeA];
     const indexB = circuitIndex[nodeB];
 
-    if (indexA != indexB) {
-      if (circuitsLeft == 2) return coords[nodeA][0] * coords[nodeB][0];
+    if (indexA === indexB) continue;
 
-      const circuitA = circuits[indexA];
-      const circuitB = circuits[indexB];
+    if (circuitsLeft == 2) return coords[nodeA][0] * coords[nodeB][0];
 
-      while (circuitB.length != 0) {
-        circuitA.push(circuitB[0]);
-        circuitIndex[circuitB[0]] = indexA;
-        circuitB.splice(0, 1);
-      }
-      circuitsLeft--;
+    const circuitA = circuits[indexA];
+    const circuitB = circuits[indexB];
+
+    for (const node of circuitB) {
+      circuitA.push(node);
+      circuitIndex[node] = indexA;
     }
+
+    circuitB.length = 0;
+    circuitsLeft--;
   }
 };
 
