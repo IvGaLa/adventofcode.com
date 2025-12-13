@@ -49,6 +49,14 @@ This process continues for a while, and the Elves are concerned that they don't 
 After making the ten shortest connections, there are 11 circuits: one circuit which contains 5 junction boxes, one circuit which contains 4 junction boxes, two circuits which contain 2 junction boxes each, and seven circuits which each contain a single junction box. Multiplying together the sizes of the three largest circuits (5, 4, and one of the circuits of size 2) produces 40.
 
 Your list contains many junction boxes; connect together the 1000 pairs of junction boxes which are closest together. Afterward, what do you get if you multiply together the sizes of the three largest circuits?
+
+--- Part Two ---
+The Elves were right; they definitely don't have enough extension cables. You'll need to keep connecting junction boxes together until they're all in one large circuit.
+
+Continuing the above example, the first connection which causes all of the junction boxes to form a single circuit is between the junction boxes at 216,146,977 and 117,168,530. The Elves need to know how far those junction boxes are from the wall so they can pick the right extension cable; multiplying the X coordinates of those two junction boxes (216 and 117) produces 25272.
+
+Continue connecting the closest unconnected pairs of junction boxes together until they're all in the same circuit. What do you get if you multiply together the X coordinates of the last two junction boxes you need to connect?
+
 */
 
 import { _readInput } from '../../lib.js';
@@ -84,24 +92,25 @@ function day08(fileInput) {
   const circuits = Array.from({ length: coordsLength }, (_, i) => [i]);
   const circuitIndex = Array.from({ length: coordsLength }, (_, i) => i);
 
-  const distances = getEdges(coords);
+  const nodes = getEdges(coords);
+
+  const LENGTH = coordsLength > 20 ? 1000 : 10;
 
   for (let i = 0; i < LENGTH; i++) {
-    const [nodeA, nodeB] = distances[i];
+    const [nodeA, nodeB] = nodes[i];
 
     const indexA = circuitIndex[nodeA];
     const indexB = circuitIndex[nodeB];
     if (indexA === indexB) continue;
 
-    const ca = circuits[indexA];
-    const cb = circuits[indexB];
+    const circuitA = circuits[indexA];
+    const circuitB = circuits[indexB];
 
-    for (const node of cb) {
-      ca.push(node);
+    for (const node of circuitB) {
+      circuitA.push(node);
       circuitIndex[node] = indexA;
     }
-
-    cb.length = 0;
+    circuitB.length = 0;
   }
 
   circuits.sort((a, b) => b.length - a.length);
@@ -113,15 +122,39 @@ function day08(fileInput) {
 
 // --------------------------------------------------------
 
-const day08Two = (edges) => {
-  let count = 0;
-  return count;
+const day08Two = (fileInput) => {
+  const coords = getCoords(fileInput);
+  const coordsLength = coords.length;
+
+  const circuits = Array.from({ length: coordsLength }, (_, i) => [i]);
+  const circuitIndex = Array.from({ length: coordsLength }, (_, i) => i);
+
+  const nodes = getEdges(coords);
+
+  let circuitsLeft = circuits.length;
+
+  for (const [nodeA, nodeB] of nodes) {
+    const indexA = circuitIndex[nodeA];
+    const indexB = circuitIndex[nodeB];
+
+    if (indexA != indexB) {
+      if (circuitsLeft == 2) return coords[nodeA][0] * coords[nodeB][0];
+
+      const circuitA = circuits[indexA];
+      const circuitB = circuits[indexB];
+
+      while (circuitB.length != 0) {
+        circuitA.push(circuitB[0]);
+        circuitIndex[circuitB[0]] = indexA;
+        circuitB.splice(0, 1);
+      }
+      circuitsLeft--;
+    }
+  }
 };
 
-const LENGTH = 1000; // for example input use 10
-
-//const fileInput = './2025/day08/example.txt'; // 40 -
-const fileInput = './2025/day08/input.txt'; // 330786 -
+//const fileInput = './2025/day08/example.txt'; // 40 - 25272
+const fileInput = './2025/day08/input.txt'; // 330786 - 3276581616
 
 console.log(day08(fileInput));
-//console.log(day08Two(fileInput));
+console.log(day08Two(fileInput));
