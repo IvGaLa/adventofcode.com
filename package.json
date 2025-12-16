@@ -64,5 +64,8 @@
     "eslint-plugin-prettier": "^5.2.1",
     "nodemon": "^3.1.7",
     "prettier": "^3.4.2"
+  },
+  "dependencies": {
+    "z3-solver": "^4.15.4"
   }
 }
