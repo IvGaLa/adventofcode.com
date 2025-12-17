@@ -48,7 +48,8 @@
     "2025:07": "nodemon 2025/day07/index.js",
     "2025:08": "nodemon 2025/day08/index.js",
     "2025:09": "nodemon 2025/day09/index.js",
-    "2025:10": "nodemon 2025/day10/index.js"
+    "2025:10": "nodemon 2025/day10/index.js",
+    "2025:11": "nodemon 2025/day11/index.js"
   },
   "keywords": [],
   "author": "IvGaLa",
