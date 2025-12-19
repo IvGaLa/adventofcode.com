@@ -37,11 +37,45 @@ In total, there are 5 different paths leading from you to out.
 
 How many different paths lead from you to out?
 
+--- Part Two ---
+Thanks in part to your analysis, the Elves have figured out a little bit about the issue. They now know that the problematic data path passes through both dac (a digital-to-analog converter) and fft (a device which performs a fast Fourier transform).
+
+They're still not sure which specific path is the problem, and so they now need you to find every path from svr (the server rack) to out. However, the paths you find must all also visit both dac and fft (in any order).
+
+For example:
+
+svr: aaa bbb
+aaa: fft
+fft: ccc
+bbb: tty
+tty: ccc
+ccc: ddd eee
+ddd: hub
+hub: fff
+eee: dac
+dac: fff
+fff: ggg hhh
+ggg: out
+hhh: out
+This new list of devices contains many paths from svr to out:
+
+svr,aaa,fft,ccc,ddd,hub,fff,ggg,out
+svr,aaa,fft,ccc,ddd,hub,fff,hhh,out
+svr,aaa,fft,ccc,eee,dac,fff,ggg,out
+svr,aaa,fft,ccc,eee,dac,fff,hhh,out
+svr,bbb,tty,ccc,ddd,hub,fff,ggg,out
+svr,bbb,tty,ccc,ddd,hub,fff,hhh,out
+svr,bbb,tty,ccc,eee,dac,fff,ggg,out
+svr,bbb,tty,ccc,eee,dac,fff,hhh,out
+However, only 2 paths from svr to out visit both dac and fft.
+
+Find all of the paths that lead from svr to out. How many of those paths visit both dac and fft?
+
+
 */
 
 import { _readInput } from '../../lib.js';
 
-const START = 'you';
 const END = 'out';
 
 const getGraph = (fileInput) => {
@@ -57,10 +91,10 @@ const getGraph = (fileInput) => {
 
 const day11 = (graph) => {
   let count = 0;
+  const START = 'you';
 
-  const dfs = (node) => {
-    for (const next of graph.get(node)) next === END ? count++ : dfs(next);
-  };
+  const dfs = (node) =>
+    graph.get(node).forEach((next) => (next === END ? count++ : dfs(next)));
 
   dfs(START);
 
@@ -69,14 +103,40 @@ const day11 = (graph) => {
 
 // --------------------------------------------------------
 
-const day11Two = (fileInput) => {
-  const data = _readInput(fileInput);
+const day11Two = (graph) => {
+  const START = 'svr';
+  const FFT = 'fft';
+  const DAC = 'dac';
 
-  return data;
+  const memo = new Map();
+
+  const dfs = (node, hasFFT, hasDAC) => {
+    const key = `${node}|${hasFFT}|${hasDAC}`;
+    if (memo.has(key)) return memo.get(key);
+
+    const nextHasFFT = hasFFT || node === FFT;
+    const nextHasDAC = hasDAC || node === DAC;
+
+    if (node === END) {
+      const result = nextHasFFT && nextHasDAC ? 1 : 0;
+      memo.set(key, result);
+      return result;
+    }
+
+    let total = 0;
+    for (const next of graph.get(node) || [])
+      total += dfs(next, nextHasFFT, nextHasDAC);
+
+    memo.set(key, total);
+    return total;
+  };
+
+  return dfs(START, false, false);
 };
 
-//const fileInput = './2025/day11/example.txt'; // 5 - 786
-const fileInput = './2025/day11/input.txt';
+//const fileInput = './2025/day11/example.txt'; // 5
+//const fileInput = './2025/day11/example_part2.txt'; // 2
+const fileInput = './2025/day11/input.txt'; // 786 - 495845045016588
 
 console.log(day11(getGraph(fileInput)));
-//console.log(day11Two(fileInput));
+console.log(day11Two(getGraph(fileInput)));
